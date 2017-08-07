@@ -370,8 +370,14 @@ void colorReduce3(Mat &image, int div = 64)
     }
 }
 
+void colorReduce4(Mat &image, int n=4)
+{
+    uchar mask = 0xFF<<n;
+    int div = pow(2,n);
+    image = (image&Scalar(mask,mask,mask))+Scalar(div/2,div/2,div/2);
+}
 
-void testColorReduce(){
+void testColorReduce(int method = 0){
     Mat img = imread(RES "boldt.jpg");
     
     if(img.empty())
@@ -381,7 +387,18 @@ void testColorReduce(){
     }
     
     const int64 start = getTickCount();
-    colorReduce3(img);
+    if (method==0) {
+        colorReduce(img);
+    }else if (method==1) {
+        colorReduce1(img);
+    }else if (method==2) {
+        colorReduce2(img);
+    }else if (method==3) {
+        colorReduce3(img);
+    }else if (method==4) {
+        colorReduce4(img);
+    }
+
     double duration = (getTickCount()-start)/getTickFrequency();
     cout<<"colorReduce duration="<<duration<<endl;
     
@@ -502,6 +519,102 @@ void testSharpen(int method = 0){
     waitKey(0);
 }
 
+void testImgCalc(int method = 0)
+{
+
+    Mat resultC;
+    Mat imageA = imread(RES "boldt.jpg");
+    Mat imageB = imread(RES "spray.jpg");
+
+    double k1,k2,k3,k;
+
+    if (method==0) {
+        k1 = k2 = 0.7;
+        k3 = 0.;
+        //cv[i] = a[I]*k1 +b[I]*k2+k3;
+        addWeighted(imageA,k1,imageB,k2,k3,resultC);
+    }else if (method ==1) {
+        //cv[i] = a[i] +b[I];
+        add(imageA,imageB,resultC);
+    }else if (method==2) {
+        k=255;
+        //cv[i] = a[i] +k;
+        add(imageA,Scalar(k),resultC);
+    }else if (method==3) {
+        k=0.7;
+        //cv[i] = a[i] *k+b[I];
+        scaleAdd(imageA,k,imageB,resultC);
+    }else if (method==4) {
+        Mat mask;
+        cvtColor(imageA,mask,CV_BGR2GRAY);
+
+        //if(mask[i])c[i] = a[i]+b[i]
+        add(imageA,imageB,resultC,mask);
+    }
+
+    namedWindow("Image");
+    imshow("Image", resultC);
+    waitKey(0);
+}
+
+void testSplit()
+{
+
+    Mat image = imread(RES "boldt.jpg");
+    Mat imageB = imread(RES "spray.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+    Mat result;
+
+    //创建3个相同的向量
+    vector<Mat> planes;
+    //分割一个3通道图像到一个单通道图像
+    split(image,planes);
+    //加到蓝色通道上
+    planes[0]+=imageB;
+    //合并三个单通道图像为一个3通道图像
+    merge(planes,result);
+
+    namedWindow("Image");
+    imshow("Image", result);
+    waitKey(0);
+}
+
+//重映射图像，创建波浪形效果
+void wave(const Mat &image, Mat &result)
+{
+    //映射参数
+    Mat srcX(image.rows,image.cols,CV_32F);
+    Mat srcY(image.rows,image.cols,CV_32F);
+
+    //创建映射参数
+    for (int i = 0; i < image.rows; ++i) {
+        for (int j = 0; j < image.cols; ++j) {
+            //i，j像素的新位置
+            srcX.at<float>(i,j) = j;//保持在同一列
+            //原来在第i行的像素，现在根据一个正弦行数来移动
+            srcY.at<float>(i,j) = i+5*sin(j/10.0);
+
+            //            反转测试
+            //            srcX.at<float>(i,j) = image.cols-j;
+            //            srcY.at<float>(i,j) = image.rows-i;
+        }
+    }
+
+    //应用映射函数
+    remap(image,result,srcX,srcY,INTER_LINEAR);//插值法
+}
+
+void testRemap()
+{
+    Mat image = imread(RES "boldt.jpg");
+    Mat result;
+
+    wave(image,result);
+
+    namedWindow("Image");
+    imshow("Image", result);
+    waitKey(0);
+}
+
 int main(int argc, char *argv[])
 {
     //        osxHello();
@@ -511,8 +624,12 @@ int main(int argc, char *argv[])
     //    testROI();
     //    testRoiMask();
     //    testSalt();
-    //    testColorReduce();
+    //        testColorReduce(4);
     //testSharpen(1);
+
+    //    testImgCalc(4);
+    //    testSplit();
+    testRemap();
     
     
     return 0;
