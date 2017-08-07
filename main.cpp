@@ -11,6 +11,7 @@
 //}
 
 
+#include <QtGlobal>
 
 #include <iostream>
 #include <string>
@@ -22,8 +23,15 @@ using namespace std;
 #include <opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 
-#define RES "/Users/xietao/Downloads/qtProjects/helloCv/"
+#include <windows.h>
 
+#ifdef Q_OS_WIN
+#define RES "E:\\workspace.qt\\HelloCv\\img\\"
+#elif Q_OS_MAC
+#define RES "/Users/xietao/Downloads/qtProjects/helloCv/"
+#else
+#define RES ""
+#endif
 
 
 #define WM_TAG "Original Image"
@@ -252,7 +260,7 @@ void salt(Mat image, int n){
 }
 
 void testSalt(){
-    Mat img = imread("boldt.jpg");
+    Mat img = imread(RES "boldt.jpg");
 
     salt(img, 4000);
 
@@ -332,7 +340,13 @@ void colorReduce2(Mat &image, int div = 64)
 
 
 void testColorReduce(){
-    Mat img = imread("boldt.jpg");
+    Mat img = imread(RES "boldt.jpg");
+
+    if(img.empty())
+    {
+        cout<<(RES "boldt.jpg") << endl <<"This image is empty."<<endl;
+        return;
+    }
 
     colorReduce1(img, 6);
 
@@ -354,7 +368,7 @@ void* ptrTest(Mat &image)
     data = image.data + image.step * j + image.elemSize()*i;
 }
 
-void macMain()
+int osx_main(int argc, char *argv[])
 {
     Mat src = imread(RES "logo.jpg");
     if(src.empty())
@@ -373,20 +387,25 @@ void macMain()
     waitKey(0);
 
     destroyWindow(winname);
+    return 0;
 }
 
 
 int main(int argc, char *argv[])
 {
-//    macMain();
+#ifdef Q_OS_MAC
+    osx_main(argc, argv[]);
+
+#elif defined(Q_OS_WIN)
 
     //test1();
     //test2();
     //testROI();
     //testRoiMask();
-    //testSalt();
+//    testSalt();
 //    testColorReduce();
 
+#endif
 
     return 0;
 }

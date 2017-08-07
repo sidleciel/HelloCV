@@ -33,6 +33,22 @@ HEADERS += \
 FORMS += \
         mainwindow.ui
 
+win32 {
+
+INCLUDEPATH += \
+        D:\opencv\opencv_qt\install\include \
+        D:\opencv\opencv_qt\install\include\opencv \
+        D:\opencv\opencv_qt\install\include\opencv2
+
+LIBS += \
+    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_core2413.dll.a \
+    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_highgui2413.dll.a \
+    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_imgproc2413.dll.a
+
+}
+
+macx {
+
 INCLUDEPATH += \
         /usr/local/include \
         /usr/local/include/opencv \
@@ -43,3 +59,5 @@ LIBS += \
     -lopencv_core \
     -lopencv_highgui \
     -lopencv_imgproc
+
+}
