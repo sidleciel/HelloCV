@@ -37,14 +37,14 @@ using namespace cv;
 #define WM_TAG "Original Image"
 
 void flipSave(Mat &img){
-    //flipï¼Œç¿»è½¬
+    //flip£¬·­×ª
     Mat result;
-    int flipCode = -1;//æ­£æ•°æ°´å¹³ï¼›0æ°´å¹³å’Œå‚ç›´éƒ½ç¿»è½¬ï¼›è´Ÿæ•°å‚ç›´ç¿»è½¬
+    int flipCode = -1;//ÕıÊıË®Æ½£»0Ë®Æ½ºÍ´¹Ö±¶¼·­×ª£»¸ºÊı´¹Ö±·­×ª
     flip(img, result, flipCode);
     imshow(WM_TAG, result);
 
-    //ä¿å­˜
-    string output = "output.png";//æ ¹æ®åç¼€ä¿å­˜æ ¼å¼
+    //±£´æ
+    string output = "output.png";//¸ù¾İºó×º±£´æ¸ñÊ½
     imwrite(output, result);
 }
 
@@ -94,30 +94,30 @@ int test1(){
     setMouseCallback(WM_TAG, onMouse, &img);
 
     circle(img,
-        Point(img.cols / 2, img.rows / 2),//åœ†å¿ƒ
-        100,//åŠå¾„
-        Scalar(191),//é¢œè‰²
-        10);//æè¾¹
+           Point(img.cols / 2, img.rows / 2),//Ô²ĞÄ
+           100,//°ë¾¶
+           Scalar(191),//ÑÕÉ«
+           10);//Ãè±ß
     imshow(WM_TAG, img);
 
     putText(img,
-        "This is HaiMa.",
-        Point(img.cols / 2 - 110, img.rows / 2 + 150),
-        FONT_HERSHEY_PLAIN,//å­—ä½“
-        2.0,//å­—ä½“å¤§å°
-        255,
-        2//åšåº¦
-        );
+            "This is HaiMa.",
+            Point(img.cols / 2 - 110, img.rows / 2 + 150),
+            FONT_HERSHEY_PLAIN,//×ÖÌå
+            2.0,//×ÖÌå´óĞ¡
+            255,
+            2//ºñ¶È
+            );
     imshow(WM_TAG, img);
     waitKey(0);
 }
 
 
-//æµ‹è¯•å‡½æ•°ï¼Œå®ƒåˆ›å»ºä¸€ä¸ªå›¾åƒ
+//²âÊÔº¯Êı£¬Ëü´´½¨Ò»¸öÍ¼Ïñ
 Mat funciton(){
-    //åˆ›å»ºå›¾åƒ
+    //´´½¨Í¼Ïñ
     Mat ima(500, 500, CV_8UC(1), 50);
-    return ima;//è¿”å›å›¾åƒ
+    return ima;//·µ»ØÍ¼Ïñ
 }
 
 void test2(){
@@ -127,7 +127,7 @@ void test2(){
     string WM_T3 = "Image 3";
     string WM_T4 = "Image 4";
     string WM_T5 = "Image 5";
-    //å®šä¹‰çª—å£
+    //¶¨Òå´°¿Ú
     namedWindow(WM_T1);
     namedWindow(WM_T2);
     namedWindow(WM_T3);
@@ -135,44 +135,44 @@ void test2(){
     namedWindow(WM_T5);
     namedWindow(WM_T);
 
-    //åˆ›å»ºä¸€ä¸ª240è¡ŒX320åˆ—çš„å›¾åƒ
+    //´´½¨Ò»¸ö240ĞĞX320ÁĞµÄÍ¼Ïñ
     Mat image1(240, 320, CV_8U, 100);
-    imshow(WM_T, image1);//æ˜¾ç¤ºå›¾åƒ
-    waitKey(0);//ç­‰å¾…æŒ‰é”®
+    imshow(WM_T, image1);//ÏÔÊ¾Í¼Ïñ
+    waitKey(0);//µÈ´ı°´¼ü
 
-    //é‡æ–°åˆ†é…ä¸€ä¸ªæ–°çš„å›¾åƒ
+    //ÖØĞÂ·ÖÅäÒ»¸öĞÂµÄÍ¼Ïñ
     image1.create(200, 200, CV_8U);
     image1 = 200;
 
     imshow(WM_T, image1);
     waitKey(0);
 
-    //åˆ›å»ºä¸€ä¸ªçº¢è‰²å›¾åƒ
-    //é€šé“æ¬¡åºä¾æ¬¡ä¸ºBGR
+    //´´½¨Ò»¸öºìÉ«Í¼Ïñ
+    //Í¨µÀ´ÎĞòÒÀ´ÎÎªBGR
     Mat image2(240, 320, CV_8UC3, Scalar(0, 0, 255));
     Mat image5(240, 320, CV_8UC3, Scalar(0, 0, 255));
-    //æˆ–è€…ï¼š
+    //»òÕß£º
     //Mat image2(240, 320, CV_8UC3);
     //image2 = Scalar(0, 0, 255);
 
     imshow(WM_T2, image2);
     waitKey(0);
 
-    //è¯»å…¥ä¸€ä¸ªå›¾åƒ
+    //¶ÁÈëÒ»¸öÍ¼Ïñ
     Mat image3 = imread("puppy.jpg");
 
-    //æ‰€æœ‰è¿™äº›å›¾åƒéƒ½æŒ‡å‘åŒä¸€ä¸ªæ•°æ®å—
+    //ËùÓĞÕâĞ©Í¼Ïñ¶¼Ö¸ÏòÍ¬Ò»¸öÊı¾İ¿é
     Mat image4(image3);
     image1 = image3;
 
-    //è¿™äº›æ˜¯æºå›¾åƒçš„å‰¯æœ¬å›¾åƒ
+    //ÕâĞ©ÊÇÔ´Í¼ÏñµÄ¸±±¾Í¼Ïñ
     image3.copyTo(image2);
     image5 = image3.clone();
 
     //image1.release();
     //image4.release();
 
-    //è½¬æ¢å›¾åƒç”¨æ¥æµ‹è¯•
+    //×ª»»Í¼ÏñÓÃÀ´²âÊÔ
     flip(image3, image3, 1);
     //flip(image2, image2, -1);
     //flip(image5, image5, 1);
@@ -201,13 +201,13 @@ void testROI(){
     Mat logo = imread("opencv-logo.png");
 
     Mat roi(puppy,
-        Rect(puppy.cols - logo.cols, puppy.rows - logo.rows,
-        logo.cols, logo.rows));
+            Rect(puppy.cols - logo.cols, puppy.rows - logo.rows,
+                 logo.cols, logo.rows));
     logo.copyTo(roi);
 
-    //æ–¹æ³•2
+    //·½·¨2
     Mat imageRoi = puppy(Range(puppy.cols - logo.cols, logo.cols),
-        Range(puppy.rows - logo.rows, logo.rows));
+                         Range(puppy.rows - logo.rows, logo.rows));
     logo.copyTo(roi);
 
     namedWindow("ROI");
@@ -220,13 +220,13 @@ void testRoiMask(){
     Mat image = imread("puppy.jpg");
     Mat logo = imread("opencv-logo.png");
 
-    // åœ¨å›¾åƒçš„å³ä¸‹è§’å®šä¹‰ä¸€ä¸ªROI
+    // ÔÚÍ¼ÏñµÄÓÒÏÂ½Ç¶¨ÒåÒ»¸öROI
     Mat imageROI = image(cv::Rect(image.cols - logo.cols,
-        image.rows - logo.rows,
-        logo.cols, logo.rows));
-    // æŠŠæ ‡å¿—ä½œä¸ºæ©ç ï¼ˆå¿…é¡»æ˜¯ç°åº¦å›¾åƒï¼‰
+                                  image.rows - logo.rows,
+                                  logo.cols, logo.rows));
+    // °Ñ±êÖ¾×÷ÎªÑÚÂë£¨±ØĞëÊÇ»Ò¶ÈÍ¼Ïñ£©
     cv::Mat mask(logo);
-    // æ’å…¥æ ‡å¿—ï¼Œåªå¤åˆ¶æ©ç ä¸ä¸º0çš„ä½ç½®
+    // ²åÈë±êÖ¾£¬Ö»¸´ÖÆÑÚÂë²»Îª0µÄÎ»ÖÃ
     logo.copyTo(imageROI, mask);
 
     namedWindow("ROI");
@@ -271,60 +271,60 @@ void testSalt(){
 }
 
 void colorReduce(Mat image, int div = 64){
-    int nl = image.rows;//è¡Œæ•°
-    int nc = image.cols*image.channels();//æ¯è¡Œçš„åƒç´ æ•°
+    int nl = image.rows;//ĞĞÊı
+    int nc = image.cols*image.channels();//Ã¿ĞĞµÄÏñËØÊı
 
     for (int j = 0; j < nl; j++)
     {
-        //å–å¾—iè¡Œçš„åœ°å€
+        //È¡µÃiĞĞµÄµØÖ·
         uchar* data = image.ptr<uchar>(j);
 
         for (int i = 0; i < nc; i++)
         {
-            //å¤„ç†æ¯ä¸ªåƒç´ 
-            //data[i] = data[i] / div*div + div / 2;//æ•´æ•°é™¤æ³•
+            //´¦ÀíÃ¿¸öÏñËØ
+            //data[i] = data[i] / div*div + div / 2;//ÕûÊı³ı·¨
 
-            data[i] = data[i] - data[i] % div + div / 2;//å–æ¨¡ç®—æ³•
-            //åƒç´ å¤„ç†ç»“æŸ
-        }//ä¸€è¡Œç»“æŸ
+            data[i] = data[i] - data[i] % div + div / 2;//È¡Ä£Ëã·¨
+            //ÏñËØ´¦Àí½áÊø
+        }//Ò»ĞĞ½áÊø
     }
 }
 
 void colorReduce1(Mat image, int n = 4){
-    int nl = image.rows;//è¡Œæ•°
-    int nc = image.cols*image.channels();//æ¯è¡Œçš„åƒç´ æ•°
+    int nl = image.rows;//ĞĞÊı
+    int nc = image.cols*image.channels();//Ã¿ĞĞµÄÏñËØÊı
 
     int div = pow(2, n);
     uchar mask = 0xFF << n;
 
     for (int j = 0; j < nl; j++)
     {
-        //å–å¾—iè¡Œçš„åœ°å€
+        //È¡µÃiĞĞµÄµØÖ·
         uchar* data = image.ptr<uchar>(j);
 
         for (int i = 0; i < nc; i++)
         {
-            //å¤„ç†æ¯ä¸ªåƒç´ 
-            *data &= mask;// æ©ç 
-            *data++ += div >> 1;// åŠ ä¸Šdiv/2
-            //åƒç´ å¤„ç†ç»“æŸ
-        }//ä¸€è¡Œç»“æŸ
+            //´¦ÀíÃ¿¸öÏñËØ
+            *data &= mask;// ÑÚÂë
+            *data++ += div >> 1;// ¼ÓÉÏdiv/2
+            //ÏñËØ´¦Àí½áÊø
+        }//Ò»ĞĞ½áÊø
     }
 }
 
 void colorReduce2(Mat &image, int div = 64)
-{//è¿ç»­å›¾åƒ
-    int nl = image.rows;//è¡Œæ•°
+{//¶ÔÁ¬ĞøÍ¼ÏñµÄ¸ßĞ§É¨Ãè
+    int nl = image.rows;//ĞĞÊı
     int nc = image.cols*image.channels();
 
     if(image.isContinuous())
     {
         cout<<"This image is continous."<<endl;
         nc *= nl;
-        nl = 1;//æˆäº†ä¸€é•¿çš„ä¸€ç»´æ•°ç»„
+        nl = 1;//³ÉÁËÒ»³¤µÄÒ»Î¬Êı×é
 
-        //æ²¡æœ‰å¡«å……æ•°æ®
-        image.reshape(1,1);//æ–°çš„é€šé“æ•°ï¼Œæ–°çš„è¡Œæ•°
+        //Ã»ÓĞÌî³äÊı¾İ
+        image.reshape(1,1);//ĞÂµÄÍ¨µÀÊı£¬ĞÂµÄĞĞÊı
     }
 
     for(int j = 0; j< nl ;j++)
@@ -338,6 +338,33 @@ void colorReduce2(Mat &image, int div = 64)
     }
 }
 
+void colorReduce3(Mat &image, int div = 64)
+{//ÓÃµü´úÆ÷É¨ÃèÍ¼Ïñ
+    cout << "ÓÃµü´úÆ÷É¨ÃèÍ¼Ïñ" << endl;
+    //    ³£Á¿µü´úÆ÷
+    //    cv::MatConstIterator_<cv::Vec3b> it;
+    //    »òÕß
+    //    cv::Mat_<cv::Vec3b>::const_iterator it;
+
+    //»ñÈ¡³õÊ¼Î»ÖÃµü´úÆ÷
+    Mat_<Vec3b>::iterator it = image.begin<Vec3b>();
+    //»ñÈ¡½áÊøÎ»ÖÃµü´úÆ÷
+    Mat_<Vec3b>::iterator itend = image.end<Vec3b>();
+
+    //    ·½·¨2£º²»ĞèÒªÖÆ¶¨·µ»Øµü´úÆ÷ÀàĞÍ
+    Mat_<Vec3b> cimage(image);
+    it = cimage.begin();
+    itend = cimage.end();
+
+    //Ñ­»·±éÀúËùÓĞÏñËØ
+    for(;it!=itend;++it)
+    {
+        (*it)[0] = (*it)[0]/div*div + div/2;
+        (*it)[1] = (*it)[1]/div*div + div/2;
+        (*it)[2] = (*it)[2]/div*div + div/2;
+    }
+}
+
 
 void testColorReduce(){
     Mat img = imread(RES "boldt.jpg");
@@ -348,7 +375,11 @@ void testColorReduce(){
         return;
     }
 
-    colorReduce1(img, 6);
+    const int64 start = getTickCount();
+    colorReduce3(img);
+    double duration = (getTickCount()-start)/getTickFrequency();
+    cout<<"colorReduce duration="<<duration<<endl;
+
 
     namedWindow("Image");
     imshow("Image", img);
@@ -357,13 +388,13 @@ void testColorReduce(){
 }
 
 void* ptrTest(Mat &image)
-{//æ­¤æ–¹æ³•ä¸æ¨èä½¿ç”¨
-    uchar* data = image.data;//è·å–å›¾åƒçš„é¦–åœ°å€
+{//µÍ²ã´ÎÖ¸ÕëËã·¨£¬´Ë·½·¨²»ÍÆ¼öÊ¹ÓÃ
+    uchar* data = image.data;//»ñÈ¡Í¼ÏñµÄÊ×µØÖ·
 
-    //image.step è·å–ä¸€è¡Œåƒç´ çš„æ€»å­—èŠ‚æ•°ï¼ˆåŒ…æ‹¬å¡«å……åƒç´ ï¼‰
-    data += image.step;//ä¸‹ä¸€è¡Œçš„åœ°å€
+    //image.step »ñÈ¡Ò»ĞĞÏñËØµÄ×Ü×Ö½ÚÊı£¨°üÀ¨Ìî³äÏñËØ£©
+    data += image.step;//ÏÂÒ»ĞĞµÄµØÖ·
 
-    //(j,i)çš„åƒç´ çš„åœ°å€ï¼Œå³image.at(j,i)
+    //(j,i)µÄÏñËØµÄµØÖ·£¬¼´image.at(j,i)
     int j,i;
     data = image.data + image.step * j + image.elemSize()*i;
 }
@@ -398,12 +429,12 @@ int main(int argc, char *argv[])
 
 #elif defined(Q_OS_WIN)
 
-    //test1();
-    //test2();
-    //testROI();
-    //testRoiMask();
-//    testSalt();
-//    testColorReduce();
+    //    test1();
+    //    test2();
+    //    testROI();
+    //    testRoiMask();
+    //    testSalt();
+    testColorReduce();
 
 #endif
 
