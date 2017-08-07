@@ -399,6 +399,58 @@ void* ptrTest(Mat &image)
     data = image.data + image.step * j + image.elemSize()*i;
 }
 
+void sharpen(const Mat &image, Mat &result)
+{
+    result.create(image.size(),image.type());
+    int nchannels = image.channels();
+
+    //    计算锐化的数值：
+    //            sharpened_pixel= 5*current-left-right-up-down;
+
+    for(int j=1;j<image.rows-1;j++){
+        const uchar* previous = image.ptr<const uchar>(j-1);
+        const uchar* current = image.ptr<const uchar>(j);
+        const uchar* next = image.ptr<const uchar>(j+1);
+
+        uchar* output = result.ptr<uchar>(j);
+
+        for(int i = nchannels;i<image.cols-1;i++)
+        {
+            *output++ = saturate_cast<uchar>(5*current[i] - current[i-nchannels] - current[i+nchannels]
+                    - previous[i]
+                    - next[i]);
+        }
+
+        result.row(0).setTo(Scalar(0));
+        result.row(image.rows-1).setTo(Scalar(0));
+        result.col(0).setTo(Scalar(0));
+        result.col(image.cols-1).setTo(Scalar(0));
+    }
+}
+
+
+void testSharpen(){
+    Mat img = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+
+    if(img.empty())
+    {
+        cout<<(RES "boldt.jpg") << endl <<"This image is empty."<<endl;
+        return;
+    }
+
+    const int64 start = getTickCount();
+    Mat result;
+    sharpen(img, result);
+    double duration = (getTickCount()-start)/getTickFrequency();
+    cout<<"sharpen duration="<<duration<<endl;
+
+
+    namedWindow("Image");
+    imshow("Image", result);
+
+    waitKey(0);
+}
+
 int osx_main(int argc, char *argv[])
 {
     Mat src = imread(RES "logo.jpg");
@@ -434,7 +486,8 @@ int main(int argc, char *argv[])
     //    testROI();
     //    testRoiMask();
     //    testSalt();
-    testColorReduce();
+//    testColorReduce();
+    testSharpen();
 
 #endif
 
