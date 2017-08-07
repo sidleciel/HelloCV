@@ -23,12 +23,15 @@ using namespace std;
 #include <opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 
-#include <windows.h>
 
 #ifdef Q_OS_WIN
+
+#include <windows.h>
 #define RES "E:\\workspace.qt\\HelloCv\\img\\"
-#elif Q_OS_MAC
-#define RES "/Users/xietao/Downloads/qtProjects/helloCv/"
+
+#endif
+#ifdef Q_OS_MAC
+#define RES "/Users/xietao/Downloads/qtProjects/helloCv/img/"
 #else
 #define RES ""
 #endif
@@ -68,9 +71,11 @@ int test1(){
         cout << "This image is null." << endl << endl;
     }
 
+#ifdef Q_OS_WIN
     char ExePath[MAX_PATH];
     GetModuleFileName(NULL, (LPWSTR)ExePath, MAX_PATH);
     cout << ExePath << endl;
+#endif
 
     //show iamge
     img = imread("1.png");
@@ -451,7 +456,7 @@ void testSharpen(){
     waitKey(0);
 }
 
-int osx_main(int argc, char *argv[])
+int osxHello()
 {
     Mat src = imread(RES "logo.jpg");
     if(src.empty())
@@ -470,26 +475,20 @@ int osx_main(int argc, char *argv[])
     waitKey(0);
 
     destroyWindow(winname);
-    return 0;
 }
-
 
 int main(int argc, char *argv[])
 {
-#ifdef Q_OS_MAC
-    osx_main(argc, argv[]);
-
-#elif defined(Q_OS_WIN)
+    //    osxHello();
 
     //    test1();
     //    test2();
     //    testROI();
     //    testRoiMask();
     //    testSalt();
-//    testColorReduce();
+    //    testColorReduce();
     testSharpen();
 
-#endif
 
     return 0;
 }
