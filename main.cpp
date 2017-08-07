@@ -40,20 +40,20 @@ using namespace cv;
 #define WM_TAG "Original Image"
 
 void flipSave(Mat &img){
-    //flip£¬·­×ª
+    //flipï¼Œç¿»è½¬
     Mat result;
-    int flipCode = -1;//ÕıÊıË®Æ½£»0Ë®Æ½ºÍ´¹Ö±¶¼·­×ª£»¸ºÊı´¹Ö±·­×ª
+    int flipCode = -1;//æ­£æ•°æ°´å¹³ï¼›0æ°´å¹³å’Œå‚ç›´éƒ½ç¿»è½¬ï¼›è´Ÿæ•°å‚ç›´ç¿»è½¬
     flip(img, result, flipCode);
     imshow(WM_TAG, result);
-
-    //±£´æ
-    string output = "output.png";//¸ù¾İºó×º±£´æ¸ñÊ½
+    
+    //ä¿å­˜
+    string output = "output.png";//æ ¹æ®åç¼€ä¿å­˜æ ¼å¼
     imwrite(output, result);
 }
 
 void onMouse(int event, int x, int y, int flags, void* param){
     Mat *im = reinterpret_cast<Mat*>(param);
-
+    
     switch (event)
     {
     case CV_EVENT_LBUTTONDOWN:
@@ -70,13 +70,13 @@ int test1(){
     if (img.empty()){
         cout << "This image is null." << endl << endl;
     }
-
+    
 #ifdef Q_OS_WIN
     char ExePath[MAX_PATH];
     GetModuleFileName(NULL, (LPWSTR)ExePath, MAX_PATH);
     cout << ExePath << endl;
 #endif
-
+    
     //show iamge
     img = imread("1.png");
     cout << "This image is " << img.cols << "x" << img.rows << endl;
@@ -87,42 +87,42 @@ int test1(){
     }
     namedWindow(WM_TAG);
     imshow(WM_TAG, img);
-
+    
     //img = imread("1.png", CV_LOAD_IMAGE_GRAYSCALE);
     //imshow(WM_TAG, img);
-
+    
     //img = imread("1.png", CV_LOAD_IMAGE_COLOR);
     //imshow(WM_TAG, img);
-
+    
     cout << "This image has " << img.channels() << " channel(s)." << endl;
-
+    
     setMouseCallback(WM_TAG, onMouse, &img);
-
+    
     circle(img,
-           Point(img.cols / 2, img.rows / 2),//Ô²ĞÄ
-           100,//°ë¾¶
-           Scalar(191),//ÑÕÉ«
-           10);//Ãè±ß
+           Point(img.cols / 2, img.rows / 2),//åœ†å¿ƒ
+           100,//åŠå¾„
+           Scalar(191),//é¢œè‰²
+           10);//æè¾¹
     imshow(WM_TAG, img);
-
+    
     putText(img,
             "This is HaiMa.",
             Point(img.cols / 2 - 110, img.rows / 2 + 150),
-            FONT_HERSHEY_PLAIN,//×ÖÌå
-            2.0,//×ÖÌå´óĞ¡
+            FONT_HERSHEY_PLAIN,//å­—ä½“
+            2.0,//å­—ä½“å¤§å°
             255,
-            2//ºñ¶È
+            2//åšåº¦
             );
     imshow(WM_TAG, img);
     waitKey(0);
 }
 
 
-//²âÊÔº¯Êı£¬Ëü´´½¨Ò»¸öÍ¼Ïñ
+//æµ‹è¯•å‡½æ•°ï¼Œå®ƒåˆ›å»ºä¸€ä¸ªå›¾åƒ
 Mat funciton(){
-    //´´½¨Í¼Ïñ
+    //åˆ›å»ºå›¾åƒ
     Mat ima(500, 500, CV_8UC(1), 50);
-    return ima;//·µ»ØÍ¼Ïñ
+    return ima;//è¿”å›å›¾åƒ
 }
 
 void test2(){
@@ -132,124 +132,124 @@ void test2(){
     string WM_T3 = "Image 3";
     string WM_T4 = "Image 4";
     string WM_T5 = "Image 5";
-    //¶¨Òå´°¿Ú
+    //å®šä¹‰çª—å£
     namedWindow(WM_T1);
     namedWindow(WM_T2);
     namedWindow(WM_T3);
     namedWindow(WM_T4);
     namedWindow(WM_T5);
     namedWindow(WM_T);
-
-    //´´½¨Ò»¸ö240ĞĞX320ÁĞµÄÍ¼Ïñ
+    
+    //åˆ›å»ºä¸€ä¸ª240è¡ŒX320åˆ—çš„å›¾åƒ
     Mat image1(240, 320, CV_8U, 100);
-    imshow(WM_T, image1);//ÏÔÊ¾Í¼Ïñ
-    waitKey(0);//µÈ´ı°´¼ü
-
-    //ÖØĞÂ·ÖÅäÒ»¸öĞÂµÄÍ¼Ïñ
+    imshow(WM_T, image1);//æ˜¾ç¤ºå›¾åƒ
+    waitKey(0);//ç­‰å¾…æŒ‰é”®
+    
+    //é‡æ–°åˆ†é…ä¸€ä¸ªæ–°çš„å›¾åƒ
     image1.create(200, 200, CV_8U);
     image1 = 200;
-
+    
     imshow(WM_T, image1);
     waitKey(0);
-
-    //´´½¨Ò»¸öºìÉ«Í¼Ïñ
-    //Í¨µÀ´ÎĞòÒÀ´ÎÎªBGR
+    
+    //åˆ›å»ºä¸€ä¸ªçº¢è‰²å›¾åƒ
+    //é€šé“æ¬¡åºä¾æ¬¡ä¸ºBGR
     Mat image2(240, 320, CV_8UC3, Scalar(0, 0, 255));
     Mat image5(240, 320, CV_8UC3, Scalar(0, 0, 255));
-    //»òÕß£º
+    //æˆ–è€…ï¼š
     //Mat image2(240, 320, CV_8UC3);
     //image2 = Scalar(0, 0, 255);
-
+    
     imshow(WM_T2, image2);
     waitKey(0);
-
-    //¶ÁÈëÒ»¸öÍ¼Ïñ
+    
+    //è¯»å…¥ä¸€ä¸ªå›¾åƒ
     Mat image3 = imread("puppy.jpg");
-
-    //ËùÓĞÕâĞ©Í¼Ïñ¶¼Ö¸ÏòÍ¬Ò»¸öÊı¾İ¿é
+    
+    //æ‰€æœ‰è¿™äº›å›¾åƒéƒ½æŒ‡å‘åŒä¸€ä¸ªæ•°æ®å—
     Mat image4(image3);
     image1 = image3;
-
-    //ÕâĞ©ÊÇÔ´Í¼ÏñµÄ¸±±¾Í¼Ïñ
+    
+    //è¿™äº›æ˜¯æºå›¾åƒçš„å‰¯æœ¬å›¾åƒ
     image3.copyTo(image2);
     image5 = image3.clone();
-
+    
     //image1.release();
     //image4.release();
-
-    //×ª»»Í¼ÏñÓÃÀ´²âÊÔ
+    
+    //è½¬æ¢å›¾åƒç”¨æ¥æµ‹è¯•
     flip(image3, image3, 1);
     //flip(image2, image2, -1);
     //flip(image5, image5, 1);
-
+    
     imshow(WM_T1, image1);
     imshow(WM_T2, image2);
     imshow(WM_T3, image3);
     imshow(WM_T4, image4);
     imshow(WM_T5, image5);
     waitKey(0);
-
+    
     Mat gray = funciton();
     imshow(WM_T, gray);
     waitKey(0);
-
+    
     image1 = imread("puppy.jpg", CV_LOAD_IMAGE_GRAYSCALE);
     image1.convertTo(image2, CV_32F, 255 / 255.0, 0.0);
-
+    
     imshow(WM_T, image2);
     waitKey(0);
-
+    
 }
 
 void testROI(){
     Mat puppy = imread("puppy.jpg");
     Mat logo = imread("opencv-logo.png");
-
+    
     Mat roi(puppy,
             Rect(puppy.cols - logo.cols, puppy.rows - logo.rows,
                  logo.cols, logo.rows));
     logo.copyTo(roi);
-
-    //·½·¨2
+    
+    //æ–¹æ³•2
     Mat imageRoi = puppy(Range(puppy.cols - logo.cols, logo.cols),
                          Range(puppy.rows - logo.rows, logo.rows));
     logo.copyTo(roi);
-
+    
     namedWindow("ROI");
     imshow("ROI", puppy);
-
+    
     waitKey(0);
 }
 
 void testRoiMask(){
     Mat image = imread("puppy.jpg");
     Mat logo = imread("opencv-logo.png");
-
-    // ÔÚÍ¼ÏñµÄÓÒÏÂ½Ç¶¨ÒåÒ»¸öROI
+    
+    // åœ¨å›¾åƒçš„å³ä¸‹è§’å®šä¹‰ä¸€ä¸ªROI
     Mat imageROI = image(cv::Rect(image.cols - logo.cols,
                                   image.rows - logo.rows,
                                   logo.cols, logo.rows));
-    // °Ñ±êÖ¾×÷ÎªÑÚÂë£¨±ØĞëÊÇ»Ò¶ÈÍ¼Ïñ£©
+    // æŠŠæ ‡å¿—ä½œä¸ºæ©ç ï¼ˆå¿…é¡»æ˜¯ç°åº¦å›¾åƒï¼‰
     cv::Mat mask(logo);
-    // ²åÈë±êÖ¾£¬Ö»¸´ÖÆÑÚÂë²»Îª0µÄÎ»ÖÃ
+    // æ’å…¥æ ‡å¿—ï¼Œåªå¤åˆ¶æ©ç ä¸ä¸º0çš„ä½ç½®
     logo.copyTo(imageROI, mask);
-
+    
     namedWindow("ROI");
     imshow("ROI", image);
-
+    
     waitKey(0);
 }
 
 void salt(Mat image, int n){
-
+    
     int i, j;
     for (int k = 0; k < n; k++)
     {
         j = rand() % image.cols;
         i = rand() % image.rows;
-
+        
         int salt = rand() % 255;
-
+        
         if (image.type() == CV_8UC1)
         {
             image.at<uchar>(i, j) = salt;
@@ -261,81 +261,81 @@ void salt(Mat image, int n){
             image.at<Vec3b>(i, j)[2] = salt;
         }
     }
-
+    
 }
 
 void testSalt(){
     Mat img = imread(RES "boldt.jpg");
-
+    
     salt(img, 4000);
-
+    
     namedWindow("Image");
     imshow("Image", img);
-
+    
     waitKey(0);
 }
 
 void colorReduce(Mat image, int div = 64){
-    int nl = image.rows;//ĞĞÊı
-    int nc = image.cols*image.channels();//Ã¿ĞĞµÄÏñËØÊı
-
+    int nl = image.rows;//è¡Œæ•°
+    int nc = image.cols*image.channels();//æ¯è¡Œçš„åƒç´ æ•°
+    
     for (int j = 0; j < nl; j++)
     {
-        //È¡µÃiĞĞµÄµØÖ·
+        //å–å¾—iè¡Œçš„åœ°å€
         uchar* data = image.ptr<uchar>(j);
-
+        
         for (int i = 0; i < nc; i++)
         {
-            //´¦ÀíÃ¿¸öÏñËØ
-            //data[i] = data[i] / div*div + div / 2;//ÕûÊı³ı·¨
-
-            data[i] = data[i] - data[i] % div + div / 2;//È¡Ä£Ëã·¨
-            //ÏñËØ´¦Àí½áÊø
-        }//Ò»ĞĞ½áÊø
+            //å¤„ç†æ¯ä¸ªåƒç´ 
+            //data[i] = data[i] / div*div + div / 2;//æ•´æ•°é™¤æ³•
+            
+            data[i] = data[i] - data[i] % div + div / 2;//å–æ¨¡ç®—æ³•
+            //åƒç´ å¤„ç†ç»“æŸ
+        }//ä¸€è¡Œç»“æŸ
     }
 }
 
 void colorReduce1(Mat image, int n = 4){
-    int nl = image.rows;//ĞĞÊı
-    int nc = image.cols*image.channels();//Ã¿ĞĞµÄÏñËØÊı
-
+    int nl = image.rows;//è¡Œæ•°
+    int nc = image.cols*image.channels();//æ¯è¡Œçš„åƒç´ æ•°
+    
     int div = pow(2, n);
     uchar mask = 0xFF << n;
-
+    
     for (int j = 0; j < nl; j++)
     {
-        //È¡µÃiĞĞµÄµØÖ·
+        //å–å¾—iè¡Œçš„åœ°å€
         uchar* data = image.ptr<uchar>(j);
-
+        
         for (int i = 0; i < nc; i++)
         {
-            //´¦ÀíÃ¿¸öÏñËØ
-            *data &= mask;// ÑÚÂë
-            *data++ += div >> 1;// ¼ÓÉÏdiv/2
-            //ÏñËØ´¦Àí½áÊø
-        }//Ò»ĞĞ½áÊø
+            //å¤„ç†æ¯ä¸ªåƒç´ 
+            *data &= mask;// æ©ç 
+            *data++ += div >> 1;// åŠ ä¸Šdiv/2
+            //åƒç´ å¤„ç†ç»“æŸ
+        }//ä¸€è¡Œç»“æŸ
     }
 }
 
 void colorReduce2(Mat &image, int div = 64)
-{//¶ÔÁ¬ĞøÍ¼ÏñµÄ¸ßĞ§É¨Ãè
-    int nl = image.rows;//ĞĞÊı
+{//å¯¹è¿ç»­å›¾åƒçš„é«˜æ•ˆæ‰«æ
+    int nl = image.rows;//è¡Œæ•°
     int nc = image.cols*image.channels();
-
+    
     if(image.isContinuous())
     {
         cout<<"This image is continous."<<endl;
         nc *= nl;
-        nl = 1;//³ÉÁËÒ»³¤µÄÒ»Î¬Êı×é
-
-        //Ã»ÓĞÌî³äÊı¾İ
-        image.reshape(1,1);//ĞÂµÄÍ¨µÀÊı£¬ĞÂµÄĞĞÊı
+        nl = 1;//æˆäº†ä¸€é•¿çš„ä¸€ç»´æ•°ç»„
+        
+        //æ²¡æœ‰å¡«å……æ•°æ®
+        image.reshape(1,1);//æ–°çš„é€šé“æ•°ï¼Œæ–°çš„è¡Œæ•°
     }
-
+    
     for(int j = 0; j< nl ;j++)
     {
         uchar *data = image.ptr<uchar>(j);
-
+        
         for(int i=0;i<nc ;i++)
         {
             data[i] = data[i]/div*div+div/2;
@@ -344,24 +344,24 @@ void colorReduce2(Mat &image, int div = 64)
 }
 
 void colorReduce3(Mat &image, int div = 64)
-{//ÓÃµü´úÆ÷É¨ÃèÍ¼Ïñ
-    cout << "ÓÃµü´úÆ÷É¨ÃèÍ¼Ïñ" << endl;
-    //    ³£Á¿µü´úÆ÷
+{//ç”¨è¿­ä»£å™¨æ‰«æå›¾åƒ
+    cout << "ç”¨è¿­ä»£å™¨æ‰«æå›¾åƒ" << endl;
+    //    å¸¸é‡è¿­ä»£å™¨
     //    cv::MatConstIterator_<cv::Vec3b> it;
-    //    »òÕß
+    //    æˆ–è€…
     //    cv::Mat_<cv::Vec3b>::const_iterator it;
-
-    //»ñÈ¡³õÊ¼Î»ÖÃµü´úÆ÷
+    
+    //è·å–åˆå§‹ä½ç½®è¿­ä»£å™¨
     Mat_<Vec3b>::iterator it = image.begin<Vec3b>();
-    //»ñÈ¡½áÊøÎ»ÖÃµü´úÆ÷
+    //è·å–ç»“æŸä½ç½®è¿­ä»£å™¨
     Mat_<Vec3b>::iterator itend = image.end<Vec3b>();
-
-    //    ·½·¨2£º²»ĞèÒªÖÆ¶¨·µ»Øµü´úÆ÷ÀàĞÍ
+    
+    //    æ–¹æ³•2ï¼šä¸éœ€è¦åˆ¶å®šè¿”å›è¿­ä»£å™¨ç±»å‹
     Mat_<Vec3b> cimage(image);
     it = cimage.begin();
     itend = cimage.end();
-
-    //Ñ­»·±éÀúËùÓĞÏñËØ
+    
+    //å¾ªç¯éå†æ‰€æœ‰åƒç´ 
     for(;it!=itend;++it)
     {
         (*it)[0] = (*it)[0]/div*div + div/2;
@@ -373,33 +373,33 @@ void colorReduce3(Mat &image, int div = 64)
 
 void testColorReduce(){
     Mat img = imread(RES "boldt.jpg");
-
+    
     if(img.empty())
     {
         cout<<(RES "boldt.jpg") << endl <<"This image is empty."<<endl;
         return;
     }
-
+    
     const int64 start = getTickCount();
     colorReduce3(img);
     double duration = (getTickCount()-start)/getTickFrequency();
     cout<<"colorReduce duration="<<duration<<endl;
-
-
+    
+    
     namedWindow("Image");
     imshow("Image", img);
-
+    
     waitKey(0);
 }
 
 void* ptrTest(Mat &image)
-{//µÍ²ã´ÎÖ¸ÕëËã·¨£¬´Ë·½·¨²»ÍÆ¼öÊ¹ÓÃ
-    uchar* data = image.data;//»ñÈ¡Í¼ÏñµÄÊ×µØÖ·
-
-    //image.step »ñÈ¡Ò»ĞĞÏñËØµÄ×Ü×Ö½ÚÊı£¨°üÀ¨Ìî³äÏñËØ£©
-    data += image.step;//ÏÂÒ»ĞĞµÄµØÖ·
-
-    //(j,i)µÄÏñËØµÄµØÖ·£¬¼´image.at(j,i)
+{//ä½å±‚æ¬¡æŒ‡é’ˆç®—æ³•ï¼Œæ­¤æ–¹æ³•ä¸æ¨èä½¿ç”¨
+    uchar* data = image.data;//è·å–å›¾åƒçš„é¦–åœ°å€
+    
+    //image.step è·å–ä¸€è¡Œåƒç´ çš„æ€»å­—èŠ‚æ•°ï¼ˆåŒ…æ‹¬å¡«å……åƒç´ ï¼‰
+    data += image.step;//ä¸‹ä¸€è¡Œçš„åœ°å€
+    
+    //(j,i)çš„åƒç´ çš„åœ°å€ï¼Œå³image.at(j,i)
     int j,i;
     data = image.data + image.step * j + image.elemSize()*i;
 }
@@ -408,52 +408,29 @@ void sharpen(const Mat &image, Mat &result)
 {
     result.create(image.size(),image.type());
     int nchannels = image.channels();
-
-    //    ¼ÆËãÈñ»¯µÄÊıÖµ£º
+    
+    //    è®¡ç®—é”åŒ–çš„æ•°å€¼ï¼š
     //            sharpened_pixel= 5*current-left-right-up-down;
-
+    
     for(int j=1;j<image.rows-1;j++){
         const uchar* previous = image.ptr<const uchar>(j-1);
         const uchar* current = image.ptr<const uchar>(j);
         const uchar* next = image.ptr<const uchar>(j+1);
-
+        
         uchar* output = result.ptr<uchar>(j);
-
+        
         for(int i = nchannels;i<image.cols-1;i++)
         {
             *output++ = saturate_cast<uchar>(5*current[i] - current[i-nchannels] - current[i+nchannels]
                     - previous[i]
                     - next[i]);
         }
-
+        
         result.row(0).setTo(Scalar(0));
         result.row(image.rows-1).setTo(Scalar(0));
         result.col(0).setTo(Scalar(0));
         result.col(image.cols-1).setTo(Scalar(0));
     }
-}
-
-
-void testSharpen(){
-    Mat img = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-
-    if(img.empty())
-    {
-        cout<<(RES "boldt.jpg") << endl <<"This image is empty."<<endl;
-        return;
-    }
-
-    const int64 start = getTickCount();
-    Mat result;
-    sharpen(img, result);
-    double duration = (getTickCount()-start)/getTickFrequency();
-    cout<<"sharpen duration="<<duration<<endl;
-
-
-    namedWindow("Image");
-    imshow("Image", result);
-
-    waitKey(0);
 }
 
 int osxHello()
@@ -468,27 +445,75 @@ int osxHello()
     namedWindow(winname, WINDOW_AUTOSIZE);
     imshow(winname, src);
     waitKey(0);
-
+    
     src = imread(RES "boldt.jpg");
     colorReduce2(src);
     imshow(winname, src);
     waitKey(0);
-
+    
     destroyWindow(winname);
+}
+
+void shapern2D(const Mat &image, Mat &result)
+{
+    //æ„é€ å†…æ ¸ï¼Œæ‰€æœ‰å…¥å£éƒ½åˆå§‹åŒ–ä¸º0
+    Mat kernel(3,3,CV_32F,Scalar(0));
+    //å¯¹å†…æ ¸èµ‹å€¼
+    kernel.at<float>(1,1) = 5.0;
+    kernel.at<float>(0,1) = -1.0;
+    kernel.at<float>(1,0) = -1.0;
+    kernel.at<float>(1,2) = -1.0;
+    kernel.at<float>(2,1) = -1.0;
+
+    //å¯¹å›¾åƒæ»¤æ³¢
+    filter2D(image,result,image.depth(),kernel);
+
+    //å¤§å†…æ ¸filter2Dæ˜¯ç‰¹åˆ«æœ‰æ•ˆçš„ï¼Œå› ä¸ºä½¿ç”¨äº†æ›´é«˜æ•ˆçš„ç®—æ³•
+
+}
+
+
+void testSharpen(int method = 0){
+    Mat img = imread(RES "boldt.jpg");
+
+    if(img.empty())
+    {
+        cout<<(RES "boldt.jpg") << endl <<"This image is empty."<<endl;
+        return;
+    }
+
+    const int64 start = getTickCount();
+    Mat result;
+    if (method == 0) {
+        cvtColor(img,img,CV_BGR2GRAY);
+        sharpen(img, result);
+    }else if(method == 1){
+        shapern2D(img,result);
+    }else{
+        result = img;
+    }
+    double duration = (getTickCount()-start)/getTickFrequency();
+    cout<<"sharpen duration="<<duration<<endl;
+
+
+    namedWindow("Image");
+    imshow("Image", result);
+
+    waitKey(0);
 }
 
 int main(int argc, char *argv[])
 {
-    //    osxHello();
-
+    //        osxHello();
+    
     //    test1();
     //    test2();
     //    testROI();
     //    testRoiMask();
     //    testSalt();
     //    testColorReduce();
-    testSharpen();
-
-
+    //testSharpen(1);
+    
+    
     return 0;
 }
