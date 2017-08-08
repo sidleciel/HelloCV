@@ -1,15 +1,3 @@
-//#include "mainwindow.h"
-//#include <QApplication>
-
-//int main(int argc, char *argv[])
-//{
-//    QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
-
-//    return a.exec();
-//}
-
 
 #include <QtGlobal>
 
@@ -18,24 +6,29 @@
 #include <vector>
 using namespace std;
 
+#include <colordetector.h>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 
 
-#ifdef Q_OS_WIN
+#define ShowMainWindow
 
-#include <windows.h>
-#define RES "E:\\workspace.qt\\HelloCv\\img\\"
-
+#ifdef ShowMainWindow
+#include "mainwindow.h"
+#include <QApplication>
 #endif
+
 #ifdef Q_OS_MAC
 #define RES "/Users/xietao/Downloads/qtProjects/helloCv/img/"
-#else
-#define RES ""
 #endif
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#define RES "E:\\workspace.qt\\HelloCv\\img\\"
+#endif
 
 #define WM_TAG "Original Image"
 
@@ -581,6 +574,11 @@ void testSplit()
 //重映射图像，创建波浪形效果
 void wave(const Mat &image, Mat &result)
 {
+    if(image.empty())
+    {
+        return;
+    }
+
     //映射参数
     Mat srcX(image.rows,image.cols,CV_32F);
     Mat srcY(image.rows,image.cols,CV_32F);
@@ -611,26 +609,87 @@ void testRemap()
     wave(image,result);
 
     namedWindow("Image");
-    imshow("Image", result);
+    if(!result.empty())
+    {
+        imshow("Image", result);
+    }
     waitKey(0);
+}
+
+void testColorDetector(int method = 0)
+{
+    //1.创建图像处理对象
+    ColorDetector cdetector;
+    //2.读取输入的图像
+    Mat img = imread(RES "boldt.jpg");
+    if (img.empty()) {
+        return;
+    }
+
+
+    if (method ==1 ) {//用仿函数处理
+        cout<<"用仿函数处理..."<<endl;
+        ColorDetector colordetector(230,190,130,100);
+        Mat result = colordetector(img);
+
+        if (result.empty()) {
+            return;
+        }
+        namedWindow("Image");
+        imshow("Image",result);
+        waitKey(0);
+        return;
+    }
+
+    //3.设置输入参数
+    Vec3b color(230,190,130);
+    //    Vec3b color(255,255,255);
+    cdetector.setTargetColor(color);//天蓝色
+    //4.处理图像并显示结果
+    namedWindow("Image");
+    cout<<"processing..."<<endl;
+    imshow("Image",cdetector.cvProcess(img));
+    cout<<"process finished."<<endl;
+    waitKey(0);
+}
+
+//int showMainWindow(int argc, char *argv[])
+//{
+//}
+
+int showMainWindow()
+{
+
 }
 
 int main(int argc, char *argv[])
 {
-    //        osxHello();
+
+#ifdef ShowMainWindow
+
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+
+#endif
+
+
+    //    osxHello();
     
     //    test1();
     //    test2();
     //    testROI();
     //    testRoiMask();
     //    testSalt();
-    //        testColorReduce(4);
-    //testSharpen(1);
+    //    testColorReduce(4);
+    //    testSharpen(1);
 
     //    testImgCalc(4);
     //    testSplit();
-    testRemap();
+    //    testRemap();
     
-    
+    testColorDetector(1);
+
     return 0;
 }

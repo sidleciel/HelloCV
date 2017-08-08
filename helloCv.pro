@@ -25,10 +25,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    colordetector.cpp \
+    colordetectcontroller.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    colordetector.h \
+    colordetectcontroller.h
 
 FORMS += \
         mainwindow.ui
