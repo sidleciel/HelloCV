@@ -32,7 +32,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     colordetector.h \
-    colordetectcontroller.h
+    colordetectcontroller.h \
+    stdafx.h
 
 FORMS += \
         mainwindow.ui

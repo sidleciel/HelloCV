@@ -1,6 +1,3 @@
-
-#include <QtGlobal>
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,24 +10,20 @@ using namespace std;
 #include <opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 
+#include <stdafx.h>
 
-#define ShowMainWindow
-
-#ifdef ShowMainWindow
+#ifdef SHOW_WIN_FORM
 #include "mainwindow.h"
 #include <QApplication>
 #endif
 
-#ifdef Q_OS_MAC
-#define RES "/Users/xietao/Downloads/qtProjects/helloCv/img/"
-#endif
+void showImage(const Mat &image)
+{
+    namedWindow(WM_TAG);
+    imshow(WM_TAG,image);
 
-#ifdef Q_OS_WIN
-#include <windows.h>
-#define RES "E:\\workspace.qt\\HelloCv\\img\\"
-#endif
-
-#define WM_TAG "Original Image"
+    waitKey(0);
+}
 
 void flipSave(Mat &img){
     //flip，翻转
@@ -653,19 +646,91 @@ void testColorDetector(int method = 0)
     waitKey(0);
 }
 
-//int showMainWindow(int argc, char *argv[])
-//{
-//}
-
-int showMainWindow()
+void  testHSV()
 {
+    Mat image = imread(RES "boldt.jpg");
+    Mat hsv;
 
+    //转换为HSV色彩空间
+    cvtColor(image,hsv,CV_BGR2HSV);
+
+    vector<Mat> channels;
+    split(hsv,channels);
+
+    //所有颜色的亮度通道变为255
+    channels[2] = 255;
+    //重新合并通道
+    merge(channels,hsv);
+
+    //转回BGR
+    Mat result;
+    cvtColor(hsv,result,CV_HSV2BGR);
+
+    namedWindow(WM_TAG);
+    imshow(WM_TAG,result);
+
+    waitKey(0);
+}
+
+void detectHScolor(const Mat &image, double minHue, double maxHue, double minSat, double maxSat, Mat &mask)
+{
+    //转换到HSV空间
+    Mat hsv;
+
+    cvtColor(image,hsv,CV_BGR2HSV);
+
+    //分割3个通道，到3个图像
+    vector<Mat> channels;
+    split(hsv,channels);
+    //channels[0] 是色调
+    //channels[1] 是饱和度
+    //channels[2] 是亮度
+
+    //色调掩码
+    Mat mask1;
+    threshold(channels[0],mask1,maxHue,255,THRESH_BINARY_INV);//小于
+    Mat mask2;
+    threshold(channels[0],mask2,minHue,255,THRESH_BINARY);//大于
+
+    Mat hueMask;
+    if (minHue < maxHue) {
+        hueMask = mask1 & mask2;
+    } else {//如果区间穿越0度中轴线
+        hueMask = mask1 | mask2;
+    }
+
+    //饱和度掩码
+    threshold(channels[1],mask1,maxSat,255,THRESH_BINARY_INV);//小于
+    threshold(channels[1],mask2,minSat,255,THRESH_BINARY);//大于
+
+    Mat satMask;
+    satMask = mask1 & mask2;
+
+    //组合掩码
+    mask = hueMask & satMask;
+}
+
+void testDetectHSV()
+{
+    Mat image = imread(RES "skin.jpg");
+
+    Mat mask;
+    detectHScolor(image,
+                  160,10,//色调从320度到20度
+                  25,166,//饱和度从0.1到0.65
+                  mask);
+
+    Mat detected(image.size(),CV_8UC3,Scalar(0,0,0));
+
+    image.copyTo(detected,mask);
+
+    showImage(detected);
 }
 
 int main(int argc, char *argv[])
 {
 
-#ifdef ShowMainWindow
+#ifdef SHOW_WIN_FORM
 
     QApplication a(argc, argv);
     MainWindow w;
@@ -689,7 +754,9 @@ int main(int argc, char *argv[])
     //    testSplit();
     //    testRemap();
     
-    testColorDetector(1);
+    //    testColorDetector(1);
+    //    testHSV();
+    //    testDetectHSV();
 
     return 0;
 }

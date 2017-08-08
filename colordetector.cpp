@@ -15,17 +15,57 @@ Mat ColorDetector::operator() (const Mat &image)
     return process(image);
 }
 
+void ColorDetector::dectectHScolor(const Mat &image, double minHue, double maxHue, double minSat, double maxSat, Mat &mask)
+{
+    //转换到HSV空间
+    Mat hsv;
+
+    cvtColor(image,hsv,CV_BGR2HSV);
+
+    //分割3个通道，到3个图像
+    vector<Mat> channels;
+    split(hsv,channels);
+    //channels[0] 是色调
+    //channels[1] 是饱和度
+    //channels[2] 是亮度
+
+    //色调掩码
+    Mat mask1;
+    threshold(channels[0],mask1,maxHue,255,THRESH_BINARY_INV);//小于
+    Mat mask2;
+    threshold(channels[0],mask2,minHue,255,THRESH_BINARY);//大于
+
+    Mat hueMask;
+    if (minHue < maxHue) {
+        hueMask = mask1 & mask2;
+    } else {//如果区间穿越0度中轴线
+        hueMask = mask1 | mask2;
+    }
+
+    //饱和度掩码
+    threshold(channels[1],mask1,maxSat,255,THRESH_BINARY_INV);//小于
+    threshold(channels[1],mask2,minSat,255,THRESH_BINARY);//大于
+
+    Mat satMask;
+    satMask = mask1 & mask2;
+
+    //组合掩码
+    mask = hueMask & satMask;
+}
+
 Mat ColorDetector::process(const Mat &image)
 {
     //必要时重新分配二值映像
     //    与输入图像相同，不过是单通道
     result.create(image.size(),CV_8U);
 
+    cvtColor(image,converted,CV_BGR2Lab);
+
     //循环处理
 
     //取得迭代器
-    Mat_<Vec3b>::const_iterator it = image.begin<Vec3b>();
-    Mat_<Vec3b>::const_iterator itend = image.end<Vec3b>();
+    Mat_<Vec3b>::const_iterator it = converted.begin<Vec3b>();
+    Mat_<Vec3b>::const_iterator itend = converted.end<Vec3b>();
 
     Mat_<uchar>::iterator itout = result.begin<uchar>();
 
@@ -111,8 +151,17 @@ int ColorDetector::getColorDistanceThreshold() const
 //设置需要检测的颜色
 void ColorDetector::setTargetColor(uchar blue, uchar green, uchar red)
 {
+    //临时的单像素图像
+    Mat tmp(1,1,CV_8UC3);
+    tmp.at<Vec3b>(0,0) = Vec3b(blue,green,red);
+
+    //目标像素转换为Lab色彩空间
+    cvtColor(tmp,tmp,CV_BGR2Lab);
+
+    target = tmp.at<Vec3b>(0,0);
+
     //次序为BGR
-    target = Vec3b(blue,green,red);
+    //    target = Vec3b(blue,green,red);
 }
 
 //设置需要检测的颜色

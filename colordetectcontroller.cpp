@@ -41,12 +41,12 @@ bool ColorDetectController::setInputImage(string filename)
 
 Mat ColorDetectController::getInputImage() const
 {
-return image;
+    return image;
 }
 
 void ColorDetectController::process()
 {
-    result = cdetector->process(image);
+    result = cdetector->cvProcess(image);
 }
 
 const Mat ColorDetectController::getLastResult() const

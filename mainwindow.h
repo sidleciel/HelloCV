@@ -22,7 +22,7 @@ public:
 //    void cancel();
 //    void ok();
 
-    void displayImage(Mat &image);
+    void displayImage(const Mat &image);
 
 private slots:
     void on_btnOpenImage_clicked();
