@@ -4,6 +4,7 @@
 using namespace std;
 
 #include <colordetector.h>
+#include <histogram1d.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -727,6 +728,28 @@ void testDetectHSV()
     showImage(detected);
 }
 
+void testHistogram1D()
+{
+    Mat image = imread(RES "boldt.jpg",
+                       0);//以黑白方式打开
+
+    Histogram1D h;
+
+    Mat hist = h.getHistogram(image);
+
+    //循环遍历每个箱子
+    for (int i = 0; i < 256; ++i) {
+        cout << "Value " << i << " = " << hist.at<float>(i) <<endl;
+    }
+
+    Mat result = h.getHistogramImage(image);
+
+    namedWindow(WM_TAG);
+    imshow(WM_TAG, result);
+
+    waitKey(0);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -757,6 +780,8 @@ int main(int argc, char *argv[])
     //    testColorDetector(1);
     //    testHSV();
     //    testDetectHSV();
+
+    testHistogram1D();
 
     return 0;
 }
