@@ -736,17 +736,19 @@ void testHistogram1D()
 
     Mat hist = h.getHistogram(image);
 
-    //循环遍历每个箱子
-    for (int i = 0; i < 256; ++i) {
-        cout << "Value " << i << " = " << hist.at<float>(i) <<endl;
-    }
+//    //循环遍历每个箱子
+//    for (int i = 0; i < 256; ++i) {
+//        cout << "Value " << i << " = " << hist.at<float>(i) <<endl;
+//    }
 
     Mat result = h.getHistogramImage(image);
 
-    namedWindow(WM_TAG);
-    imshow(WM_TAG, result);
+    if(!result.empty()){
+        namedWindow(WM_TAG);
+        imshow(WM_TAG, result);
 
-    waitKey(0);
+        waitKey(0);
+    }
 }
 
 int main(int argc, char *argv[])

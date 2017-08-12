@@ -1,24 +1,6 @@
 #include "histogram1d.h"
 
-
-Mat Histogram1D::getHistogram(const Mat &image)
-{
-    Mat hist;
-
-    calcHist(&image,
-             1,//仅为一个图像的直方图
-             channels,//使用的通道
-             Mat(),//不使用掩码
-             hist,//作为结果的直方图
-             1,//这是一维的直方图
-             histSize,//箱子数量
-             ranges//像素值的范围
-             );
-
-    return hist;
-}
-
-static Mat getImageOfHistogram(const Mat &hist, int zoom)
+Mat Histogram1D::getImageOfHistogram(const Mat &hist, int zoom)
 {
     double minVal = 0;
     double maxVal = 0;
@@ -47,6 +29,23 @@ static Mat getImageOfHistogram(const Mat &hist, int zoom)
     }
 
     return histImg;
+}
+
+Mat Histogram1D::getHistogram(const Mat &image)
+{
+    Mat hist;
+
+    calcHist(&image,
+             1,//仅为一个图像的直方图
+             channels,//使用的通道
+             Mat(),//不使用掩码
+             hist,//作为结果的直方图
+             1,//这是一维的直方图
+             histSize,//箱子数量
+             ranges//像素值的范围
+             );
+
+    return hist;
 }
 
 Mat Histogram1D::getHistogramImage(const Mat &image, int zoom)

@@ -15,7 +15,6 @@ private:
     const float* ranges[1];//值范围的指针
     int channels[1];//要检查的通道数量
 
-    static Mat getImageOfHistogram(const Mat &hist, int zoom);
 public:
     Histogram1D(){
         //准备一维直方图的默认参数
@@ -27,7 +26,10 @@ public:
     }
 
     Mat getHistogram(const Mat &image);
+
     Mat getHistogramImage(const Mat &image, int zoom = 1);//计算一维直方图，并返回它的图像
+
+    static Mat getImageOfHistogram(const Mat &hist, int zoom);
 };
 
 #endif // HISTOGRAM1D_H
