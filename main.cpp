@@ -730,8 +730,7 @@ void testDetectHSV()
 
 void testHistogram1D()
 {
-    Mat image = imread(RES "boldt.jpg",
-                       0);//以黑白方式打开
+    Mat image = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
 
     Histogram1D h;
 

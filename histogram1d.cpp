@@ -18,13 +18,6 @@ Mat Histogram1D::getHistogram(const Mat &image)
     return hist;
 }
 
-Mat Histogram1D::getHistogramImage(const Mat &image, int zoom)
-{
-    Mat hist = getHistogram(image);
-
-    return getImageOfHistogram(hist, zoom);
-}
-
 static Mat getImageOfHistogram(const Mat &hist, int zoom)
 {
     double minVal = 0;
@@ -54,4 +47,11 @@ static Mat getImageOfHistogram(const Mat &hist, int zoom)
     }
 
     return histImg;
+}
+
+Mat Histogram1D::getHistogramImage(const Mat &image, int zoom)
+{
+    Mat hist = getHistogram(image);
+
+    return getImageOfHistogram(hist, zoom);
 }
