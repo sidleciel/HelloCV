@@ -4,8 +4,8 @@ Mat ColorHistogram::getHistogram(const Mat &image)
 {
     Mat hist;
 
-    ranges[0] = 0.0;
-    ranges[1] = 256.0;
+    hranges[0] = 0.0;
+    hranges[1] = 256.0;
     channels[0] = 0;
     channels[1] = 1;
     channels[2] = 2;
@@ -29,8 +29,8 @@ SparseMat ColorHistogram::getSparseHistogram(const Mat &image)
                    histSize,
                    CV_32F);
 
-    ranges[0] = 0.0;
-    ranges[1] = 256.0;
+    hranges[0] = 0.0;
+    hranges[1] = 256.0;
     channels[0] = 0;
     channels[1] = 1;
     channels[2] = 2;
