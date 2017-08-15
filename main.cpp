@@ -736,10 +736,10 @@ void testHistogram1D()
 
     Mat hist = h.getHistogram(image);
 
-//    //循环遍历每个箱子
-//    for (int i = 0; i < 256; ++i) {
-//        cout << "Value " << i << " = " << hist.at<float>(i) <<endl;
-//    }
+    //    //循环遍历每个箱子
+    //    for (int i = 0; i < 256; ++i) {
+    //        cout << "Value " << i << " = " << hist.at<float>(i) <<endl;
+    //    }
 
     Mat result = h.getHistogramImage(image);
 
@@ -760,6 +760,36 @@ void testHistogram1D()
 
         waitKey(0);
     }
+}
+
+void testLut()
+{
+    int dim(256);
+    Mat lut(1,//一维
+            &dim,//256个项目
+            CV_8U);//uchar类型
+
+    for (int i = 0; i < dim; ++i) {
+        lut.at<uchar>(i) = 255 -i;
+    }
+
+    Mat image = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
+    Mat result = Histogram1D::applyLookUp(image, lut);
+
+    showImage(result);
+}
+
+void testStrech()
+{
+    Mat image = imread(RES "skin.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
+    showImage(image);
+
+    Histogram1D h;
+
+    // 把1%的像素设为黑色，1%的设为白色
+    cv::Mat streteched = h.stretch(image,0.01f);
+
+    showImage(streteched);
 }
 
 int main(int argc, char *argv[])
@@ -793,7 +823,9 @@ int main(int argc, char *argv[])
     //    testHSV();
     //    testDetectHSV();
 
-    testHistogram1D();
+    //    testHistogram1D();
+    //    testLut();
+    //    testStrech();
 
     return 0;
 }

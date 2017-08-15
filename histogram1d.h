@@ -30,6 +30,9 @@ public:
     Mat getHistogramImage(const Mat &image, int zoom = 1);//计算一维直方图，并返回它的图像
 
     static Mat getImageOfHistogram(const Mat &hist, int zoom);
+    static Mat applyLookUp(const Mat &image, const Mat &lookup);
+
+    Mat stretch(const cv::Mat &image, int minValue=0);
 };
 
 #endif // HISTOGRAM1D_H
