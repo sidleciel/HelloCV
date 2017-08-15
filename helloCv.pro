@@ -28,14 +28,16 @@ SOURCES += \
         mainwindow.cpp \
     colordetector.cpp \
     colordetectcontroller.cpp \
-    histogram1d.cpp
+    histogram1d.cpp \
+    colorhistogram.cpp
 
 HEADERS += \
         mainwindow.h \
     colordetector.h \
     colordetectcontroller.h \
     histogram1d.h \
-    stdafx.h
+    stdafx.h \
+    colorhistogram.h
 
 FORMS += \
         mainwindow.ui

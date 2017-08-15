@@ -730,7 +730,7 @@ void testDetectHSV()
 
 void testHistogram1D()
 {
-    Mat image = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
+    Mat image = imread(RES "skin.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
 
     Histogram1D h;
 
@@ -743,9 +743,20 @@ void testHistogram1D()
 
     Mat result = h.getHistogramImage(image);
 
+    namedWindow("Image");
+    imshow("Image", image);
+
     if(!result.empty()){
         namedWindow(WM_TAG);
         imshow(WM_TAG, result);
+
+        setMouseCallback(WM_TAG, onMouse, &result);
+
+
+        Mat thresholded;
+        threshold(image,thresholded,125,255,THRESH_BINARY);
+        namedWindow("Threshold");
+        imshow("Threshold", thresholded);
 
         waitKey(0);
     }
