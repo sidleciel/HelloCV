@@ -364,8 +364,20 @@ void colorReduce4(Mat &image, int n=4)
     image = (image&Scalar(mask,mask,mask))+Scalar(div/2,div/2,div/2);
 }
 
+void colorReduce5(Mat &image, int div = 64)
+{//查找表方法,增强图像对比度
+
+    Mat lookup(1,256, CV_8U);
+
+    for (int i = 0; i < 256; ++i) {
+        lookup.at<uchar>(i) = i/div*div+div/2;
+    }
+
+    LUT(image,lookup,image);
+}
+
 void testColorReduce(int method = 0){
-    Mat img = imread(RES "boldt.jpg");
+    Mat img = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);
     
     if(img.empty())
     {
@@ -384,6 +396,8 @@ void testColorReduce(int method = 0){
         colorReduce3(img);
     }else if (method==4) {
         colorReduce4(img);
+    }else if (method==5) {
+        colorReduce5(img);
     }
 
     double duration = (getTickCount()-start)/getTickFrequency();
@@ -792,6 +806,50 @@ void testStrech()
     showImage(streteched);
 }
 
+void testBackProject()
+{
+    Mat image = imread(RES "beach.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
+
+    namedWindow("WM_TAG");
+    imshow("WM_TAG", image);
+    setMouseCallback("WM_TAG", onMouse, &image);
+    waitKey(0);
+
+    //
+    Mat imageRoi;
+    imageRoi = image(Rect(410,180,20,30));
+
+    Histogram1D h;
+    Mat hist = h.getHistogram(imageRoi);
+
+    normalize(hist,hist,1.0);
+
+    int channels[1];
+    float hranges[2];
+    const float* ranges[1];
+    Mat result;
+
+    channels[0] = 0;
+    hranges[0] = 1.0f;
+    hranges[1] = 256.0f;
+    ranges[0] = hranges;
+
+    calcBackProject(&image,
+                    1,//一个图像
+                    channels,//用到的通道，取决于图像的维度
+                    hist,//需要反向投影的直方图
+                    result,//反向投影得到的结果
+                    ranges,//值的范围
+                    255.0);//选用的换算系数，把概率值从1映射到255
+
+    double thresh = 60.0;
+    threshold(result, result, thresh,255, THRESH_BINARY);
+
+    imshow(WM_TAG, result);
+
+    waitKey(0);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -812,7 +870,7 @@ int main(int argc, char *argv[])
     //    testROI();
     //    testRoiMask();
     //    testSalt();
-    //    testColorReduce(4);
+    //    testColorReduce(5);
     //    testSharpen(1);
 
     //    testImgCalc(4);
@@ -826,6 +884,8 @@ int main(int argc, char *argv[])
     //    testHistogram1D();
     //    testLut();
     //    testStrech();
+
+    testBackProject();
 
     return 0;
 }
