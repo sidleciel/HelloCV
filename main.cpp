@@ -5,6 +5,8 @@ using namespace std;
 
 #include <colordetector.h>
 #include <histogram1d.h>
+#include <colorhistogram.h>
+#include <contentfinder.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -850,6 +852,32 @@ void testBackProject()
     waitKey(0);
 }
 
+void testBackProject1()
+{
+    Mat image = imread(RES "beach.jpg");//以黑白方式打开
+
+    namedWindow("WM_TAG");
+    imshow("WM_TAG", image);
+    setMouseCallback("WM_TAG", onMouse, &image);
+    waitKey(0);
+
+    //
+    Mat imageRoi;
+    imageRoi = image(Rect(130,30,20,30));
+
+    ColorHistogram hc;
+//    hc.setSize(8);
+
+    Mat chist = hc.getHistogram(image);
+
+    ContentFinder finder;
+    finder.setHistogram(chist);
+    finder.setThreshold(0.25f);
+
+    Mat result = finder.find(image);
+    showImage(result);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -885,7 +913,8 @@ int main(int argc, char *argv[])
     //    testLut();
     //    testStrech();
 
-    testBackProject();
+//    testBackProject();
+    testBackProject1();
 
     return 0;
 }

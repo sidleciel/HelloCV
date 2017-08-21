@@ -29,7 +29,8 @@ SOURCES += \
     colordetector.cpp \
     colordetectcontroller.cpp \
     histogram1d.cpp \
-    colorhistogram.cpp
+    colorhistogram.cpp \
+    contentfinder.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -37,7 +38,8 @@ HEADERS += \
     colordetectcontroller.h \
     histogram1d.h \
     stdafx.h \
-    colorhistogram.h
+    colorhistogram.h \
+    contentfinder.h
 
 FORMS += \
         mainwindow.ui
