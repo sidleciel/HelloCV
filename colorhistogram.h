@@ -28,8 +28,12 @@ public:
         channels[2] = 2;//先关注通道0
     }
 
+    void setSize(int size){
+        histSize[0] = histSize[1] = histSize[2] = size;
+    }
 
     Mat getHistogram(const Mat &image);
+    Mat getHueHistogram(const Mat &image, int minSaturation = 0);
     SparseMat getSparseHistogram(const Mat &image);
 
 };

@@ -10,9 +10,9 @@ Mat ContentFinder::find(const Mat &image)
     hranges[0] = 0.0;
     hranges[1] = 256.0;
 
-    ranges[0] = hranges;
-    ranges[1] = hranges;
-    ranges[2] = hranges;
+    channels[0]= 0; // 三个通道
+    channels[1]= 1;
+    channels[2]= 2;
 
     return find(image, hranges[0], hranges[1], channels);
 }

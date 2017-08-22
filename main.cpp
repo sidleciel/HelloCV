@@ -11,6 +11,7 @@ using namespace std;
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/video/tracking.hpp>
 using namespace cv;
 
 #include <stdafx.h>
@@ -20,10 +21,24 @@ using namespace cv;
 #include <QApplication>
 #endif
 
-void showImage(const Mat &image)
+void onMouse(int event, int x, int y, int flags, void* param){
+    Mat *im = reinterpret_cast<Mat*>(param);
+
+    switch (event)
+    {
+    case CV_EVENT_LBUTTONDOWN:
+        cout << "at (" << x << "," << y << ") value is " << static_cast<int>(im->at<uchar>(Point(x, y))) << endl;
+        break;
+    default:
+        break;
+    }
+}
+
+void showImage(Mat &image)
 {
     namedWindow(WM_TAG);
     imshow(WM_TAG,image);
+    setMouseCallback(WM_TAG, onMouse, &image);
 
     waitKey(0);
 }
@@ -38,19 +53,6 @@ void flipSave(Mat &img){
     //保存
     string output = "output.png";//根据后缀保存格式
     imwrite(output, result);
-}
-
-void onMouse(int event, int x, int y, int flags, void* param){
-    Mat *im = reinterpret_cast<Mat*>(param);
-    
-    switch (event)
-    {
-    case CV_EVENT_LBUTTONDOWN:
-        cout << "at (" << x << "," << y << ") value is " << static_cast<int>(im->at<uchar>(Point(x, y))) << endl;
-        break;
-    default:
-        break;
-    }
 }
 
 int test1(){
@@ -855,20 +857,23 @@ void testBackProject()
 void testBackProject1()
 {
     Mat image = imread(RES "beach.jpg");//以黑白方式打开
+    Rect rect(130,30,20,30);
+    rectangle(image, rect, Scalar(0,0,255));
 
     namedWindow("WM_TAG");
     imshow("WM_TAG", image);
     setMouseCallback("WM_TAG", onMouse, &image);
     waitKey(0);
 
-    //
+    // 提取兴趣区域
     Mat imageRoi;
-    imageRoi = image(Rect(130,30,20,30));
+    imageRoi = image(rect);
 
     ColorHistogram hc;
-//    hc.setSize(8);
+    // 取得3D颜色直方图（每个通道含8个箱子）
+    hc.setSize(8); // 8 × 8 × 8
 
-    Mat chist = hc.getHistogram(image);
+    Mat chist = hc.getHistogram(imageRoi);
 
     ContentFinder finder;
     finder.setHistogram(chist);
@@ -876,6 +881,55 @@ void testBackProject1()
 
     Mat result = finder.find(image);
     showImage(result);
+}
+
+void testHsvBackProject()
+{
+    //读取参考图像
+    Mat image = imread(RES "baboon1.jpg");
+
+    //狒狒脸部ROI
+    Mat imageROI;
+    Rect rect(110,260,35,40);
+    imageROI = image(rect);
+    if (imageROI.empty()) {
+        return;
+    }
+
+    rectangle(image, rect, Scalar(0,0,255), 1, 1, 0);
+    namedWindow(WM_TAG);
+    imshow(WM_TAG, image);
+    setMouseCallback(WM_TAG, onMouse, &image);
+    waitKey(0);
+
+    int minSat = 65;
+    ColorHistogram hc;
+    Mat colorHist = hc.getHueHistogram(imageROI, minSat);
+
+    ContentFinder finder;
+    finder.setHistogram(colorHist);
+
+    // 转换成HSV色彩空间
+    image = imread(RES "baboon3.jpg");
+    Mat hsv;
+    cvtColor(image, hsv, CV_BGR2HSV);
+    // 得到色调直方图的反向投影
+    int ch[1] = {0};
+    finder.setThreshold(-0.1f);// 不做阈值化
+    Mat result = finder.find(hsv, 0.0f, 180.0f, ch);
+
+    //初始搜索位置
+    rectangle(image, rect, Scalar(0,0,255), 1, 1, 0);
+
+    TermCriteria criteria(TermCriteria::MAX_ITER,
+                          10,
+                          0.01);//迭代停止条件为：最大迭代10次，中心偏移距离小于0.01
+//    #include <opencv2/video/tracking.hpp>//meanShift 所在头文件
+    cout << "meanShift=" << cv::meanShift(result, rect, criteria) << endl;
+    //搜索结束位置
+    rectangle(image, rect, Scalar(0,255,0), 1, 1, 0);
+
+    showImage(image);
 }
 
 int main(int argc, char *argv[])
@@ -913,8 +967,9 @@ int main(int argc, char *argv[])
     //    testLut();
     //    testStrech();
 
-//    testBackProject();
-    testBackProject1();
+//        testBackProject();
+//        testBackProject1();
+    testHsvBackProject();
 
     return 0;
 }

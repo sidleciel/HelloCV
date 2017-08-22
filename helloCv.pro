@@ -54,7 +54,8 @@ INCLUDEPATH += \
 LIBS += \
     D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_core2413.dll.a \
     D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_highgui2413.dll.a \
-    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_imgproc2413.dll.a
+    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_imgproc2413.dll.a \
+    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_video2413.dll.a
 
 }
 
@@ -69,6 +70,7 @@ LIBS += \
     -L/usr/local/lib \
     -lopencv_core \
     -lopencv_highgui \
-    -lopencv_imgproc
+    -lopencv_imgproc \
+    -lopencv_video
 
 }
