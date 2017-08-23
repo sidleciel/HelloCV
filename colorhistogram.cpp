@@ -6,6 +6,7 @@ Mat ColorHistogram::getHistogram(const Mat &image)
 
     hranges[0] = 0.0;
     hranges[1] = 256.0;
+
     channels[0] = 0;
     channels[1] = 1;
     channels[2] = 2;

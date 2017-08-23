@@ -3,11 +3,6 @@
 #include <vector>
 using namespace std;
 
-#include <colordetector.h>
-#include <histogram1d.h>
-#include <colorhistogram.h>
-#include <contentfinder.h>
-
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -15,6 +10,12 @@ using namespace std;
 using namespace cv;
 
 #include <stdafx.h>
+
+#include <colordetector.h>
+#include <histogram1d.h>
+#include <colorhistogram.h>
+#include <contentfinder.h>
+#include <imagecomparator.h>
 
 #ifdef SHOW_WIN_FORM
 #include "mainwindow.h"
@@ -932,6 +933,33 @@ void testHsvBackProject()
     showImage(image);
 }
 
+void testImageCompare()
+{
+    ImageComparator c;
+    string refPath = RES "baboon1.jpg";
+    Mat ref = imread(refPath);
+
+    cout << "ref image is " << refPath <<endl;
+    c.setRefrenceImage(ref);
+
+    string s1 = RES "beach.jpg";
+    Mat img1 = imread(s1);
+    cout << s1 << " compare val is " << c.compare(img1) << endl;
+
+    s1 = RES "boldt.jpg";
+    img1 = imread(s1);
+    cout << s1 << " compare val is " << c.compare(img1) << endl;
+
+    s1 = RES "1.png";
+    img1 = imread(s1);
+    cout << s1 << " compare val is " << c.compare(img1) << endl;
+
+    s1 = RES "baboon3.jpg";
+    img1 = imread(s1);
+    cout << s1 << " compare val is " << c.compare(img1) << endl;
+
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -967,9 +995,11 @@ int main(int argc, char *argv[])
     //    testLut();
     //    testStrech();
 
-//        testBackProject();
-//        testBackProject1();
-    testHsvBackProject();
+    //    testBackProject();
+    //    testBackProject1();
+    //    testHsvBackProject();
+
+    testImageCompare();
 
     return 0;
 }

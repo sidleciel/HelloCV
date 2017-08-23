@@ -29,7 +29,7 @@ public:
     }
 
     void setSize(int size){
-        histSize[0] = histSize[1] = histSize[2] = size;
+        histSize[0] = size;
     }
 
     Mat getHistogram(const Mat &image);
