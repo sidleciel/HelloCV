@@ -991,6 +991,47 @@ void testIntegral()
 
 }
 
+void testAdaptiveThresholding()
+{
+    Mat image = imread(RES "page.jpg");
+
+    // 使用固定的阈值
+    cv::Mat binaryFixed;
+    cv::threshold(image,binaryFixed,70,255,cv::THRESH_BINARY);
+    showImage(binaryFixed);
+
+    Mat iimage;
+    integral(image, iimage, CV_32S);
+
+    int blockSize= 21; // 邻域的尺寸
+    int threshold=10; // 像素将与(mean-threshold)进行比较
+    int nl = iimage.rows;
+    int nc = iimage.cols;
+    // 逐行
+    int halfSize= blockSize/2;
+    for (int j=halfSize; j<nl-halfSize-1; j++) {
+        // 得到第j行的地址
+        uchar* data= image.ptr<uchar>(j);
+        int* idata1= iimage.ptr<int>(j-halfSize);
+        int* idata2= iimage.ptr<int>(j+halfSize+1);
+        // 一个线条的像素
+        for (int i=halfSize; i<nc-halfSize-1; i++) {
+            // 计算累加值
+            int sum= (idata2[i+halfSize+1]-
+                    idata2[i-halfSize]-
+                    idata1[i+halfSize+1]+
+                    idata1[i-halfSize])/
+                    (blockSize*blockSize);
+            // 应用自适应阈值
+            if (data[i]<(sum-threshold))
+                data[i]= 0;
+            else
+                data[i]=255;
+        }
+    }
+    showImage(iimage);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1032,7 +1073,9 @@ int main(int argc, char *argv[])
 
     //    testImageCompare();
 
-    testIntegral();
+//    testIntegral();
+
+    testAdaptiveThresholding();
 
     return 0;
 }
