@@ -13,7 +13,7 @@ class IntegralImage
 public:
     IntegralImage(Mat image){
         //(很耗时)计算积分图像
-        cv::integral(image, integralImage, DataType<N>::type);
+        cv::integral(image, integralImage, DataType<T>::type);
     }
 
     //通过访问4个像素，计算任何尺寸子区域的累计值

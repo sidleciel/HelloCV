@@ -1075,13 +1075,13 @@ void convertToBinaryPlanes(const Mat &input, Mat &output, int nPlanes)
     }
 
     //创建多通道图像
-    merge(planes, ouput);
+    merge(planes, output);
 }
 
 void testIntegralTracking()
 {
     // 打开图像
-    Mat image = imread(RES "bike55.jpg");
+    Mat image = imread(RES "bike55.bmp", CV_LOAD_IMAGE_GRAYSCALE);
 
     int xo=97, yo=112;
     int width=25, height=30;
@@ -1092,7 +1092,7 @@ void testIntegralTracking()
     h.setNBins(16);
     Mat refHistogram = h.getHistogram(roi);
 
-    Mat secondImage;
+    Mat secondImage = imread(RES "bike65.bmp", CV_LOAD_IMAGE_GRAYSCALE);
     if (secondImage.empty()) {
         return;
     }
@@ -1104,11 +1104,11 @@ void testIntegralTracking()
 
     double maxSimilarity = 0.0;
     int xbest, ybest;
-    Mat histogram;
-    rectangle(secondImage, Rect(0, 110, secondImage.cols, height+120), Scalar(255, 255, 255));
+    Vec<float, 16> histogram;
+    rectangle(secondImage, Rect(0, 110, secondImage.cols, height+10), Scalar(255, 255, 255));
     //遍历原始图像中女孩位置的水平长条
     for (int y = 110; y < 120; ++y) {
-        for (int i = 0; i < secondImage.cols-width; ++i) {
+        for (int x = 0; x < secondImage.cols-width; ++x) {
             //用积分图像计算16个箱子的直方图
             histogram = intHistogram(x, y, width, height);
             //计算与基准直方图的差距
