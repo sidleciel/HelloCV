@@ -960,6 +960,37 @@ void testImageCompare()
 
 }
 
+void testIntegral()
+{
+    // 打开图像
+    Mat image = imread(RES "bike55.jpg");
+
+    int xo=97, yo=112;
+    int width=25, height=30;
+
+    rectangle(image, Rect(xo, yo, width, height), Scalar(255, 0, 0), 1 , 1, 0);
+    showImage(image);
+
+    int64 start = getTickCount();
+    // 定义图像的ROI（这里为骑自行车的女孩）
+    Mat imageROI = image(Rect(xo, yo, width, height));
+    Scalar sum = cv::sum(imageROI);
+    cout << "sum use time :" << (getTickCount()-start)/getTickFrequency() << endl;
+
+    start = getTickCount();
+    // 计算积分图像
+    Mat integralImage;
+    cv::integral(image, integralImage, CV_32S);
+
+    // 用三个加/减运算得到一个区域的累加值
+    int sumInt= integralImage.at<int>(yo+height,xo+width)
+            -integralImage.at<int>(yo+height,xo)
+            -integralImage.at<int>(yo,xo+width)
+            +integralImage.at<int>(yo,xo);
+    cout << "sum(integral) use time :" << (getTickCount()-start)/getTickFrequency() << ", sum=" << sumInt << endl;
+
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -999,7 +1030,9 @@ int main(int argc, char *argv[])
     //    testBackProject1();
     //    testHsvBackProject();
 
-    testImageCompare();
+    //    testImageCompare();
+
+    testIntegral();
 
     return 0;
 }
