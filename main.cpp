@@ -16,6 +16,7 @@ using namespace cv;
 #include <colorhistogram.h>
 #include <contentfinder.h>
 #include <imagecomparator.h>
+#include <integralimage.h>
 
 #ifdef SHOW_WIN_FORM
 #include "mainwindow.h"
@@ -70,7 +71,7 @@ int test1(){
 #endif
     
     //show iamge
-    img = imread("1.png");
+    img = imread("boldt.jpg");
     cout << "This image is " << img.cols << "x" << img.rows << endl;
     if (img.empty()){
         cout << "img is empty" << endl;
@@ -80,10 +81,10 @@ int test1(){
     namedWindow(WM_TAG);
     imshow(WM_TAG, img);
     
-    //img = imread("1.png", CV_LOAD_IMAGE_GRAYSCALE);
+    //img = imread("boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);
     //imshow(WM_TAG, img);
     
-    //img = imread("1.png", CV_LOAD_IMAGE_COLOR);
+    //img = imread("boldt.jpg", CV_LOAD_IMAGE_COLOR);
     //imshow(WM_TAG, img);
     
     cout << "This image has " << img.channels() << " channel(s)." << endl;
@@ -156,7 +157,7 @@ void test2(){
     waitKey(0);
     
     //读入一个图像
-    Mat image3 = imread("puppy.jpg");
+    Mat image3 = imread("puppy.bmp");
     
     //所有这些图像都指向同一个数据块
     Mat image4(image3);
@@ -185,7 +186,7 @@ void test2(){
     imshow(WM_T, gray);
     waitKey(0);
     
-    image1 = imread("puppy.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    image1 = imread("puppy.bmp", CV_LOAD_IMAGE_GRAYSCALE);
     image1.convertTo(image2, CV_32F, 255 / 255.0, 0.0);
     
     imshow(WM_T, image2);
@@ -194,7 +195,7 @@ void test2(){
 }
 
 void testROI(){
-    Mat puppy = imread("puppy.jpg");
+    Mat puppy = imread("puppy.bmp");
     Mat logo = imread("opencv-logo.png");
     
     Mat roi(puppy,
@@ -214,7 +215,7 @@ void testROI(){
 }
 
 void testRoiMask(){
-    Mat image = imread("puppy.jpg");
+    Mat image = imread("puppy.bmp");
     Mat logo = imread("opencv-logo.png");
     
     // 在图像的右下角定义一个ROI
@@ -530,7 +531,7 @@ void testImgCalc(int method = 0)
 
     Mat resultC;
     Mat imageA = imread(RES "boldt.jpg");
-    Mat imageB = imread(RES "spray.jpg");
+    Mat imageB = imread(RES "rain.jpg");
 
     double k1,k2,k3,k;
 
@@ -567,7 +568,7 @@ void testSplit()
 {
 
     Mat image = imread(RES "boldt.jpg");
-    Mat imageB = imread(RES "spray.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+    Mat imageB = imread(RES "rain.jpg",CV_LOAD_IMAGE_GRAYSCALE);
     Mat result;
 
     //创建3个相同的向量
@@ -732,7 +733,7 @@ void detectHScolor(const Mat &image, double minHue, double maxHue, double minSat
 
 void testDetectHSV()
 {
-    Mat image = imread(RES "skin.jpg");
+    Mat image = imread(RES "girl.jpg");
 
     Mat mask;
     detectHScolor(image,
@@ -749,7 +750,7 @@ void testDetectHSV()
 
 void testHistogram1D()
 {
-    Mat image = imread(RES "skin.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
+    Mat image = imread(RES "group.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
 
     Histogram1D h;
 
@@ -800,7 +801,7 @@ void testLut()
 
 void testStrech()
 {
-    Mat image = imread(RES "skin.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
+    Mat image = imread(RES "group.jpg", CV_LOAD_IMAGE_GRAYSCALE);//以黑白方式打开
     showImage(image);
 
     Histogram1D h;
@@ -950,7 +951,7 @@ void testImageCompare()
     img1 = imread(s1);
     cout << s1 << " compare val is " << c.compare(img1) << endl;
 
-    s1 = RES "1.png";
+    s1 = RES "waves.jpg";
     img1 = imread(s1);
     cout << s1 << " compare val is " << c.compare(img1) << endl;
 
@@ -993,7 +994,8 @@ void testIntegral()
 
 void testAdaptiveThresholding()
 {
-    Mat image = imread(RES "page.jpg");
+    Mat image = imread(RES "book.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    showImage(image);
 
     // 使用固定的阈值
     cv::Mat binaryFixed;
@@ -1003,6 +1005,7 @@ void testAdaptiveThresholding()
     Mat iimage;
     integral(image, iimage, CV_32S);
 
+    //-------------------------
     int blockSize= 21; // 邻域的尺寸
     int threshold=10; // 像素将与(mean-threshold)进行比较
     int nl = iimage.rows;
@@ -1017,11 +1020,11 @@ void testAdaptiveThresholding()
         // 一个线条的像素
         for (int i=halfSize; i<nc-halfSize-1; i++) {
             // 计算累加值
-            int sum= (idata2[i+halfSize+1]-
-                    idata2[i-halfSize]-
-                    idata1[i+halfSize+1]+
-                    idata1[i-halfSize])/
-                    (blockSize*blockSize);
+            int sum= idata2[i+halfSize+1]
+                    -idata2[i-halfSize]
+                    -idata1[i+halfSize+1]
+                    +idata1[i-halfSize];
+            sum = sum/(blockSize*blockSize);
             // 应用自适应阈值
             if (data[i]<(sum-threshold))
                 data[i]= 0;
@@ -1029,7 +1032,98 @@ void testAdaptiveThresholding()
                 data[i]=255;
         }
     }
-    showImage(iimage);
+    showImage(image);
+
+    //------------
+    Mat binaryAdaptive;
+    cv::adaptiveThreshold(image,//输入图像
+            binaryAdaptive,//输出二值图像
+            255,//输出的最大值
+            cv::ADAPTIVE_THRESH_MEAN_C,//方法(ADAPTIVE_THRESH_GAUSSIAN_C,高斯加权累计值要块一些)
+            cv::THRESH_BINARY,//阀值类型
+            blockSize,//块的大小
+            threshold);//使用的阀值
+    showImage(binaryAdaptive);
+
+    //图像滤波方法
+    Mat filtered;
+    Mat binaryFiltered;
+    boxFilter(image, filtered, CV_8U, Size(blockSize, blockSize));
+    filtered = filtered - threshold;
+    binaryFiltered = image>= binaryFiltered;
+    showImage(binaryFiltered);
+}
+
+//转换成二值图层组成的多通道图像，一个平面关联直方图的一个箱子
+//nPlanes必须是2的幂
+void convertToBinaryPlanes(const Mat &input, Mat &output, int nPlanes)
+{
+    //需要屏蔽的位数
+    int n = 8 - static_cast<uchar>(log(static_cast<double>(nPlanes))/log(2.0));
+    //用来消除最低有效位的掩码
+    uchar mask = 0xFF<<n;
+
+    //创建二值图像的向量
+    std::vector<Mat> planes;
+    //消除最低有效位，箱子数量位nBins
+    Mat reduced = input & mask;
+
+    //计算每个二值平面图像
+    for (int i = 0; i < nPlanes; ++i) {
+        //将每个i<<shift的图像设为1
+        planes.push_back((reduced==(i<<n)) & 0x1);
+    }
+
+    //创建多通道图像
+    merge(planes, ouput);
+}
+
+void testIntegralTracking()
+{
+    // 打开图像
+    Mat image = imread(RES "bike55.jpg");
+
+    int xo=97, yo=112;
+    int width=25, height=30;
+    Mat roi = image(Rect(xo, yo, width, height));
+
+    //16个箱子的直方图
+    Histogram1D h;
+    h.setNBins(16);
+    Mat refHistogram = h.getHistogram(roi);
+
+    Mat secondImage;
+    if (secondImage.empty()) {
+        return;
+    }
+    //首先创建16个平面的二值图像
+    Mat planes;
+    convertToBinaryPlanes(secondImage, planes, 16);
+    //然后计算积分图像
+    IntegralImage<float, 16> intHistogram(planes);
+
+    double maxSimilarity = 0.0;
+    int xbest, ybest;
+    Mat histogram;
+    rectangle(secondImage, Rect(0, 110, secondImage.cols, height+120), Scalar(255, 255, 255));
+    //遍历原始图像中女孩位置的水平长条
+    for (int y = 110; y < 120; ++y) {
+        for (int i = 0; i < secondImage.cols-width; ++i) {
+            //用积分图像计算16个箱子的直方图
+            histogram = intHistogram(x, y, width, height);
+            //计算与基准直方图的差距
+            double distance = compareHist(histogram, refHistogram, CV_COMP_INTERSECT);
+
+            if (distance>maxSimilarity) {
+                xbest = x;
+                ybest = y;
+                maxSimilarity = distance;
+            }
+        }
+    }
+
+    rectangle(secondImage, Rect(xbest, ybest, width, height), Scalar(0, 255, 0));
+    showImage(secondImage);
 }
 
 int main(int argc, char *argv[])
@@ -1074,8 +1168,8 @@ int main(int argc, char *argv[])
     //    testImageCompare();
 
 //    testIntegral();
-
-    testAdaptiveThresholding();
+//    testAdaptiveThresholding();
+    testIntegralTracking();
 
     return 0;
 }

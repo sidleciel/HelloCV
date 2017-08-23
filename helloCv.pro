@@ -31,7 +31,8 @@ SOURCES += \
     histogram1d.cpp \
     colorhistogram.cpp \
     contentfinder.cpp \
-    imagecomparator.cpp
+    imagecomparator.cpp \
+    integralimage.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +42,8 @@ HEADERS += \
     stdafx.h \
     colorhistogram.h \
     contentfinder.h \
-    imagecomparator.h
+    imagecomparator.h \
+    integralimage.h
 
 FORMS += \
         mainwindow.ui

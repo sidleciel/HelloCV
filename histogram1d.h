@@ -33,6 +33,10 @@ public:
     static Mat applyLookUp(const Mat &image, const Mat &lookup);
 
     Mat stretch(const cv::Mat &image, int minValue=0);
+
+    void setNBins(int size){
+        histSize[0] = size;
+    }
 };
 
 #endif // HISTOGRAM1D_H
