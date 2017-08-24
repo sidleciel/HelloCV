@@ -32,7 +32,8 @@ SOURCES += \
     colorhistogram.cpp \
     contentfinder.cpp \
     imagecomparator.cpp \
-    integralimage.cpp
+    integralimage.cpp \
+    morphofeature.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +44,8 @@ HEADERS += \
     colorhistogram.h \
     contentfinder.h \
     imagecomparator.h \
-    integralimage.h
+    integralimage.h \
+    morphofeature.h
 
 FORMS += \
         mainwindow.ui

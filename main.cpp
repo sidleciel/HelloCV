@@ -17,6 +17,7 @@ using namespace cv;
 #include <contentfinder.h>
 #include <imagecomparator.h>
 #include <integralimage.h>
+#include <morphofeature.h>
 
 #ifdef SHOW_WIN_FORM
 #include "mainwindow.h"
@@ -36,13 +37,14 @@ void onMouse(int event, int x, int y, int flags, void* param){
     }
 }
 
-void showImage(Mat &image)
+void showImage(Mat &image, String tag = WM_TAG, int wait = 0)
 {
-    namedWindow(WM_TAG);
-    imshow(WM_TAG,image);
-    setMouseCallback(WM_TAG, onMouse, &image);
+    namedWindow(tag);
+    imshow(tag, image);
+    setMouseCallback(tag, onMouse, &image);
 
-    waitKey(0);
+    if(wait==0)
+        waitKey(0);
 }
 
 void flipSave(Mat &img){
@@ -1126,6 +1128,94 @@ void testIntegralTracking()
     showImage(secondImage);
 }
 
+void testErodeDilate()
+{
+    //    腐蚀图像相当于对其反色图像膨胀后再取反色；
+    //    膨胀图像相当于对其反色图像腐蚀后再取反色。
+
+
+    // 读取输入图像
+    Mat image = imread(RES "binary.bmp");
+
+    //openCV形态学函数支持就地处理
+
+    // 腐蚀图像
+    Mat eroded;
+    erode(image, eroded, Mat());
+    showImage(eroded, "Eroded", 1);
+
+    // 膨胀图像
+    Mat dilated;
+    dilate(image, dilated, Mat());
+    showImage(dilated, "Dilated", 1);
+
+
+    //也可制定结构元素
+    cv::Mat element(7,7,CV_8U,cv::Scalar(1));
+    cv::erode(image,eroded,element);
+    showImage(eroded, "Eroded2", 1);
+
+    // 腐蚀图像三次
+    cv::erode(image,eroded,cv::Mat(),cv::Point(-1,-1),3);
+    //    cv::Point(-1,-1)表示原点是矩阵的中心点（默认值）
+    showImage(eroded, "Eroded3");
+}
+
+void testMorphologyEx()
+{
+//    开启和闭合滤波器的定义，只是简单地使用了基本的腐蚀和膨胀运算。
+//    闭合的定义是对图像先膨胀后腐蚀。
+//    开启的定义是对图像先腐蚀后膨胀。
+    Mat image = imread(RES "binary.bmp");
+
+    cv::Mat element5(5,5,CV_8U,cv::Scalar(1));//结构大小依情况而定，5x5让效果更佳明显
+    cv::Mat closed;
+    cv::morphologyEx(image,closed,cv::MORPH_CLOSE,element5);
+    showImage(closed, "MORPH_CLOSE", 1);
+
+    cv::Mat opened;
+    cv::morphologyEx(image,opened,cv::MORPH_OPEN,element5);
+    showImage(opened, "MORPH_OPEN", 1);
+
+    Mat result;
+    // 膨胀原图像
+    cv::dilate(image,result,cv::Mat());
+    // 就地腐蚀膨胀后的图像
+    cv::erode(result,result,cv::Mat());
+    showImage(result, "MORPH_CLOSE 1");
+}
+
+void testMorphGradient()
+{
+    Mat image = imread(RES "building.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+
+    // 用3 × 3结构元素得到梯度图像
+    Mat result;
+    cv::morphologyEx(image, result, cv::MORPH_GRADIENT, Mat());
+
+    //对图像阀值化得到一个二值图像
+    int threshold = 10;
+    cv::threshold(result, result, threshold, 255, THRESH_BINARY);
+    result ^= 0xFF;
+    showImage(result);
+}
+
+void testMorphoCorners()
+{
+    Mat image = imread(RES "building.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    // 得到角点
+    Mat corners;
+    MorphoFeature morpho;
+    morpho.setThreshold(40);
+    corners = morpho.getCorners(image);
+    showImage(corners, "Corners", 1);
+
+    //在图像上显示角点
+    morpho.drawOnImage(corners, image);
+    showImage(image, "Corners On Image");
+
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1169,7 +1259,13 @@ int main(int argc, char *argv[])
 
 //    testIntegral();
 //    testAdaptiveThresholding();
-    testIntegralTracking();
+//    testIntegralTracking();
+
+//    testErodeDilate();
+//    testMorphologyEx();
+
+//    testMorphGradient();
+    testMorphoCorners();
 
     return 0;
 }
