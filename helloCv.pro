@@ -33,7 +33,8 @@ SOURCES += \
     contentfinder.cpp \
     imagecomparator.cpp \
     integralimage.cpp \
-    morphofeature.cpp
+    morphofeature.cpp \
+    watershedsegmenter.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +46,8 @@ HEADERS += \
     contentfinder.h \
     imagecomparator.h \
     integralimage.h \
-    morphofeature.h
+    morphofeature.h \
+    watershedsegmenter.h
 
 FORMS += \
         mainwindow.ui

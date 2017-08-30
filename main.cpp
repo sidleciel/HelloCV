@@ -18,6 +18,7 @@ using namespace cv;
 #include <imagecomparator.h>
 #include <integralimage.h>
 #include <morphofeature.h>
+#include <watershedsegmenter.h>
 
 #ifdef SHOW_WIN_FORM
 #include "mainwindow.h"
@@ -45,6 +46,11 @@ void showImage(Mat &image, String tag = WM_TAG, int wait = 0)
 
     if(wait==0)
         waitKey(0);
+}
+
+void showImage(Mat &image, int wait)
+{
+    showImage(image, WM_TAG, wait);
 }
 
 void flipSave(Mat &img){
@@ -1216,6 +1222,44 @@ void testMorphoCorners()
 
 }
 
+void testWatershedSegment()
+{
+    Mat image = imread(RES "group.jpg");
+    if (image.empty()) {
+        return;
+    }
+    showImage(image, 1);
+
+    Mat binary = imread(RES "binaryGroup.bmp", CV_LOAD_IMAGE_GRAYSCALE);
+    showImage(binary, "Binary", 1);
+
+    Mat fg;
+    erode(binary, fg, Mat(), Point(-1,-1), 4);
+    showImage(fg, "Forceground", 1);
+
+    Mat bg;
+    dilate(binary, bg, Mat(), Point(-1, -1), 4);
+    threshold(bg, bg, 1, 128, THRESH_BINARY_INV);
+    showImage(bg, "Background", 1);
+
+    Mat markers(binary.size(), CV_8U, Scalar(0));
+    markers = fg + bg;
+    showImage(markers, "Marker", 1);
+
+
+    // 创建分水岭分割类的对象
+    WatershedSegmenter segmenter;
+    // 设置标记图像，然后执行分割过程
+    segmenter.setMarkers(markers);
+    segmenter.process(image);
+
+    Mat result = segmenter.getSegmentation();
+    showImage(result, "Segmentation", 1);
+
+    result = segmenter.getWatersheds();
+    showImage(result, "Watersheds");
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1247,7 +1291,7 @@ int main(int argc, char *argv[])
     //    testHSV();
     //    testDetectHSV();
 
-    //    testHistogram1D();
+//        testHistogram1D();
     //    testLut();
     //    testStrech();
 
@@ -1265,7 +1309,9 @@ int main(int argc, char *argv[])
 //    testMorphologyEx();
 
 //    testMorphGradient();
-    testMorphoCorners();
+//    testMorphoCorners();
+
+    testWatershedSegment();
 
     return 0;
 }
