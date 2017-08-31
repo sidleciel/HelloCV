@@ -27,6 +27,21 @@ using namespace cv;
 #include <QApplication>
 #endif
 
+// 方法计时
+int64 tickCont = 0;
+
+int64 startCount()
+{
+    return tickCont = cv::getTickCount();
+}
+
+int64 getTimeCount()
+{
+    int64 ret = (cv::getTickCount() - tickCont)/cv::getTickFrequency();
+    tickCont = cv::getTickCount();
+    return ret;
+}
+
 void onMouse(int event, int x, int y, int flags, void* param){
     Mat *im = reinterpret_cast<Mat*>(param);
 
@@ -1338,6 +1353,42 @@ void testMserFeatures()
     showImage(result);
 }
 
+void testGrabCut()
+{
+    Mat image = imread(RES "group.jpg");
+
+    //定义一个带边框的矩形
+    //矩形的外部被视为背景
+    Rect rectangle(12, 100, 380, 170);
+//    cv::rectangle(image, rectangle, Scalar(255, 255, 255));
+    showImage(image);
+
+    startCount();
+    Mat result;//
+    Mat fgModel, bgModel;//
+    cv::grabCut(image,
+                result,//分割结果
+                rectangle,//包含前景的矩形
+                bgModel, fgModel,//模型
+                5,//迭代次数
+                cv::GC_INIT_WITH_RECT);//使用矩形
+
+    //GC_BGD，表示明确属于背景的像素
+    //GC_FGD，表示明确属于前景的像素
+    //GC_PR_BGD，表示可能属于背景的像素
+    //GC_PR_FGD，表示可能属于前景的像素
+
+    //取得“可能属于前景”的像素
+    compare(result, GC_PR_FGD, result, CMP_EQ);
+    Mat forceground(image.size(), CV_8UC3, Scalar(255, 255, 255));
+    image.copyTo(forceground, result);//不复制背景图像
+    cout << "testGrabCut use time : " << getTimeCount() << endl;
+
+    //用按位与运算检查第一位，因为（GC_FGD，GC_PR_FGD）定义的值位1, 3
+    result &= 1;//如果是前景色，结果位1
+    showImage(forceground, "Forceground");
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1369,7 +1420,7 @@ int main(int argc, char *argv[])
     //    testHSV();
     //    testDetectHSV();
 
-//        testHistogram1D();
+    //    testHistogram1D();
     //    testLut();
     //    testStrech();
 
@@ -1379,21 +1430,26 @@ int main(int argc, char *argv[])
 
     //    testImageCompare();
 
-//    testIntegral();
-//    testAdaptiveThresholding();
-//    testIntegralTracking();
+    //    testIntegral();
+    //    testAdaptiveThresholding();
+    //    testIntegralTracking();
 
-//    testErodeDilate();
-//    testMorphologyEx();
+    //Chapter:05
+    //    testErodeDilate();
+    //    testMorphologyEx();
 
-//    testMorphGradient();
-//    testMorphoCorners();
+    //    testMorphGradient();
+    //    testMorphoCorners();
 
-//    testWatershedSegment();
-//    testWatershedSegment1();
+    //    testWatershedSegment();
+    //    testWatershedSegment1();
 
-//    testMser();
-    testMserFeatures();
+    //    testMser();
+    //    testMserFeatures();
+
+    //    testGrabCut();
+
+    //Chapter:06
 
     return 0;
 }
