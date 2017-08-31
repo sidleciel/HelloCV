@@ -33,8 +33,9 @@ SOURCES += \
     contentfinder.cpp \
     imagecomparator.cpp \
     integralimage.cpp \
-    morphofeature.cpp \
-    watershedsegmenter.cpp
+    watershedsegmenter.cpp \
+    mserfeatures.cpp \
+    morphofeature.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS += \
     imagecomparator.h \
     integralimage.h \
     morphofeature.h \
-    watershedsegmenter.h
+    watershedsegmenter.h \
+    mserfeatures.h
 
 FORMS += \
         mainwindow.ui
@@ -63,7 +65,8 @@ LIBS += \
     D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_core2413.dll.a \
     D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_highgui2413.dll.a \
     D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_imgproc2413.dll.a \
-    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_video2413.dll.a
+    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_video2413.dll.a \
+    D:\opencv\opencv_qt\install\x86\mingw\lib\libopencv_features2d2413.dll.a
 
 }
 
@@ -79,6 +82,7 @@ LIBS += \
     -lopencv_core \
     -lopencv_highgui \
     -lopencv_imgproc \
-    -lopencv_video
+    -lopencv_video \
+    -lopencv_features2d
 
 }

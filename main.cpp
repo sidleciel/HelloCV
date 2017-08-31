@@ -7,6 +7,7 @@ using namespace std;
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
+#include <opencv2/features2d/features2d.hpp>
 using namespace cv;
 
 #include <stdafx.h>
@@ -19,6 +20,7 @@ using namespace cv;
 #include <integralimage.h>
 #include <morphofeature.h>
 #include <watershedsegmenter.h>
+#include <mserfeatures.h>
 
 #ifdef SHOW_WIN_FORM
 #include "mainwindow.h"
@@ -1260,6 +1262,82 @@ void testWatershedSegment()
     showImage(result, "Watersheds");
 }
 
+void testWatershedSegment1()
+{
+    Mat image = imread(RES "tower.jpg");
+
+    Mat imageMask(image.size(), CV_8U, Scalar(0));
+
+    rectangle(imageMask, Point(5, 5), Point(image.cols - 5, image.rows - 5), Scalar(255), 3);
+    rectangle(imageMask, Point(image.cols/2 - 10, image.rows/2 - 10), Point(image.cols/2 + 10, image.rows/2 + 10), Scalar(1), 10);
+
+//    rectangle(image, Point(5, 5), Point(image.cols - 5, image.rows - 5), Scalar(255, 255, 255), 3);
+//    rectangle(image, Point(image.cols/2 - 10, image.rows/2 - 10), Point(image.cols/2 + 10, image.rows/2 + 10), Scalar(1, 1, 1), 10);
+    showImage(image, WM_TAG, 1);
+
+    WatershedSegmenter segmenter;
+    segmenter.setMarkers(imageMask);
+    segmenter.process(image);
+    Mat result = segmenter.getWatersheds();
+    showImage(result, "Watersheds");
+}
+
+void testMser()
+{
+    Mat image = imread(RES "building.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    if (image.empty()) {
+        return;
+    }
+    dilate(image, image, Mat());
+    showImage(image, 1);
+
+    // 基本的MSER检测器
+    MSER mser(5, // 检测极值区域时使用的增量
+                  200, // 允许的最小面积
+                  1500); // 允许的最大面积
+    // 点集的容器
+    vector<vector<Point>> points;
+    // 检测MSER特征
+    mser(image, points);//结果是一个包含若干个区域容器
+
+    // 创建白色图像
+    Mat output(image.size(), CV_8UC3);
+    output = Scalar(255, 255, 255);
+    // 随机数生成器
+    cv::RNG rng;
+
+    // 针对每个检测到的特征区域
+    for (std::vector<std::vector<cv::Point>>::iterator it = points.begin();
+         it != points.end(); it++ ) {
+        // 生成随机颜色
+        Vec3b c(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+
+
+        for (std::vector<Point>::iterator itPts = it->begin();
+             itPts != it->end(); itPts++ ) {
+            //不重写MSER的像素
+            if (output.at<cv::Vec3b>(*itPts)[0]==255) {
+                output.at<cv::Vec3b>(*itPts)= c;
+            }
+        }
+    }
+    showImage(output, "MSER");
+}
+
+void testMserFeatures()
+{
+    Mat image = imread(RES "building.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    if (image.empty()) {
+        return;
+    }
+
+    // 创建MSER特征检测器的实例
+    MSERFeatures mserf(200, 1500, 0.5);
+    std::vector<RotatedRect> rects;// 存放带边框的旋转矩形的容器
+    Mat result = mserf.getImageOfEllipse(image, rects);// 检测并取得图像
+    showImage(result);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1311,7 +1389,11 @@ int main(int argc, char *argv[])
 //    testMorphGradient();
 //    testMorphoCorners();
 
-    testWatershedSegment();
+//    testWatershedSegment();
+//    testWatershedSegment1();
+
+//    testMser();
+    testMserFeatures();
 
     return 0;
 }
