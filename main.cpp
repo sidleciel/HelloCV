@@ -1389,17 +1389,45 @@ void testGrabCut()
     showImage(forceground, "Forceground");
 }
 
-void testBlur()
+void testBlur(int method = 0)
 {
-    Mat image = imread(RES "boldt.jpg");
-    Mat result;
-    cv::blur(image, result,
-             cv::Size(5, 5));// 滤波器尺寸
-    showImage(result, "Blur", 1);
+    Mat image = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    if (method == 0) {
+        Mat result;
+        cv::blur(image, result,
+                 cv::Size(5, 5));// 滤波器尺寸
+        showImage(result, "Blur", 1);
 
-    cv::GaussianBlur(image, result, cv::Size(5, 5),
-                     1.5);// 控制高斯曲线形状的参数
-    showImage(result, "GaussianBlur");
+        cv::GaussianBlur(image, result, cv::Size(5, 5),
+                         1.5);// 控制高斯曲线形状的参数
+        showImage(result, "GaussianBlur");
+    } else if (method == 1) {//缩减像素采样
+        //首先去除高频成分
+        cv::GaussianBlur(image, image, cv::Size(11, 11), 2.0);
+        //每4个像素中，只保留一个
+        Mat reduced2(image.rows/4.0, image.cols/4.0, CV_8U);
+        for (int i = 0; i < reduced2.rows; ++i) {
+            for (int j = 0; j < reduced2.cols; ++j) {
+                reduced2.at<uchar>(i, j) = image.at<uchar>(i*4, j*4);
+            }
+        }
+        showImage(reduced2, "Reduced Image");
+    } else if (method == 2) {
+        Mat reducedImage;
+        cv::pyrDown(image, reducedImage);//图像尺寸缩小一半
+        showImage(reducedImage, "Reduced Image");
+    } else if (method == 3) {
+        Mat resizedImage;
+        cv::resize(image, resizedImage, Size(), 1/4.0, 1/4.0);
+//        cv::resize(image, resizedImage, Size(image.cols/4, image.ros/4));
+        showImage(resizedImage, "Resized Image");
+    } else if (method == 4) {
+        Mat resizedImage;
+//        cv::resize(image, resizedImage, Size(), 3.0, 3.0, cv::INTER_NEAREST);
+        cv::resize(image, resizedImage, Size(), 3.0, 3.0, cv::INTER_LINEAR);//缺省
+
+        showImage(resizedImage, "Resized Image");
+    }
 }
 
 int main(int argc, char *argv[])
@@ -1463,7 +1491,7 @@ int main(int argc, char *argv[])
     //    testGrabCut();
 
     //Chapter:06
-    testBlur();//低通滤波
+    testBlur(4);//低通滤波
 
     return 0;
 }
