@@ -1389,6 +1389,19 @@ void testGrabCut()
     showImage(forceground, "Forceground");
 }
 
+void testBlur()
+{
+    Mat image = imread(RES "boldt.jpg");
+    Mat result;
+    cv::blur(image, result,
+             cv::Size(5, 5));// 滤波器尺寸
+    showImage(result, "Blur", 1);
+
+    cv::GaussianBlur(image, result, cv::Size(5, 5),
+                     1.5);// 控制高斯曲线形状的参数
+    showImage(result, "GaussianBlur");
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1450,6 +1463,7 @@ int main(int argc, char *argv[])
     //    testGrabCut();
 
     //Chapter:06
+    testBlur();//低通滤波
 
     return 0;
 }
