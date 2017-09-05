@@ -1427,6 +1427,14 @@ void testBlur(int method = 0)
         cv::resize(image, resizedImage, Size(), 3.0, 3.0, cv::INTER_LINEAR);//缺省
 
         showImage(resizedImage, "Resized Image");
+    } else if (method == 5) {
+        image = imread(RES "salted.bmp", CV_LOAD_IMAGE_GRAYSCALE);
+        if (image.empty()) {
+            return;
+        }
+        Mat result;
+        cv::medianBlur(image, result, 5);//滤波尺寸
+        showImage(result, "medianBlur");
     }
 }
 
@@ -1491,7 +1499,7 @@ int main(int argc, char *argv[])
     //    testGrabCut();
 
     //Chapter:06
-    testBlur(4);//低通滤波
+    testBlur(5);//低通滤波
 
     return 0;
 }
