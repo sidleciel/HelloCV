@@ -1438,6 +1438,77 @@ void testBlur(int method = 0)
     }
 }
 
+void testSobel(int method = 0)
+{
+    Mat image = imread(RES "boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    if(image.empty())return;
+
+    //水平方向滤波器
+    Mat sobelX;
+    cv::Sobel(image,// 输入
+              sobelX,// 输出
+              CV_8U,// 图像类型
+              1, 0,// 内核规格
+              3,// 正方形内核的尺寸
+              0.4, 128);// 比例和偏移量
+    showImage(sobelX, "Sobel X Image", 1);
+
+    //垂直方向滤波器
+    Mat sobelY;
+    cv::Sobel(image,// 输入
+              sobelY,// 输出
+              CV_8U,// 图像类型
+              0, 1,// 内核规格
+              3,// 正方形内核的尺寸
+              0.4, 128);// 比例和偏移量
+    showImage(sobelY, "Sobel Y Image", 1);
+
+    if (method == 0){
+        // 计算Sobel滤波器的模
+        cv::Sobel(image, sobelX, CV_16S, 1, 0);
+        cv::Sobel(image, sobelY, CV_16S, 0, 1);
+        // 计算L1模
+        Mat sobel = abs(sobelX) + abs(sobelY);
+
+        // 找到Sobel最大值
+        double sobmin, sobmax;
+        minMaxLoc(sobel, &sobmin, &sobmax);
+        // 转换成8位图像
+        // sobelImage = -alpha*sobel + 255
+        Mat sobelImage;
+        sobel.convertTo(sobelImage, CV_8U, -255./sobmax, 255);
+        showImage(sobelImage, "Sobel Image", 1);
+
+        Mat sobelThresholded;
+        int threshold = 230;
+        cv::threshold(sobelImage, sobelThresholded, threshold, 255, cv::THRESH_BINARY);
+        showImage(sobelThresholded, "Binary Sobel Image(low)");
+    } else if (method == 1) {
+        // 计算Sobel算子，必须用浮点数类型
+        Sobel(image, sobelX, CV_32F, 1, 0);
+        Sobel(image, sobelY, CV_32F, 0, 1);
+        // 计算梯度的L2模和方向
+        Mat norm, dir;
+        //默认情况下，得到的方向用弧度表示。如果要使用角度，只需要增加一个参数并设为true
+        cv::cartToPolar(sobelX, sobelY, norm, dir);
+
+        // 找到Sobel最大值
+        double sobmin, sobmax;
+        minMaxLoc(norm, &sobmin, &sobmax);
+        // 转换成8位图像
+        // sobelImage = -alpha*sobel + 255
+        Mat sobelImage;
+        norm.convertTo(sobelImage, CV_8U, -255./sobmax, 255);
+        showImage(sobelImage, "Sobel Image", 1);
+
+        Mat sobelThresholded;
+        int threshold = 230;
+        cv::threshold(sobelImage, sobelThresholded, threshold, 255, cv::THRESH_BINARY);
+        showImage(sobelThresholded, "Binary Sobel Image(high)");
+    }
+
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1499,7 +1570,8 @@ int main(int argc, char *argv[])
     //    testGrabCut();
 
     //Chapter:06
-    testBlur(5);//低通滤波
+//    testBlur(5);//低通、中通滤波
+    testSobel(1);
 
     return 0;
 }
