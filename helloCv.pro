@@ -35,7 +35,9 @@ SOURCES += \
     integralimage.cpp \
     watershedsegmenter.cpp \
     mserfeatures.cpp \
-    morphofeature.cpp
+    morphofeature.cpp \
+    skindetect.cpp \
+    videoprocessor.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +51,8 @@ HEADERS += \
     integralimage.h \
     morphofeature.h \
     watershedsegmenter.h \
-    mserfeatures.h
+    mserfeatures.h \
+    videoprocessor.h
 
 FORMS += \
         mainwindow.ui

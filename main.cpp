@@ -27,6 +27,11 @@ using namespace cv;
 #include <QApplication>
 #endif
 
+#include "videoprocessor.h"
+
+extern void cvSkinModel(Mat img, Mat &mask);
+extern void cvThresholdOtsu(Mat src, Mat &dst);
+
 // 方法计时
 int64 tickCont = 0;
 
@@ -1509,6 +1514,69 @@ void testSobel(int method = 0)
 
 }
 
+void ellipseSkinDetect(){
+    Mat input_image;
+    Mat output_mask;
+    Mat output_image;
+
+    VideoCapture cam;
+    cam.open("rtsp://172.20.1.149:8554/184490");
+    if (!cam.isOpened()){
+        std::cout << "camera can't opened!" << endl;
+        return;
+    }
+
+    namedWindow("input image");
+    namedWindow("output mask");
+    namedWindow("output image");
+
+    while (true) {
+        cam >> input_image;
+        if (input_image.empty())
+            return;
+
+        cvSkinModel(input_image, output_mask);
+//        cvThresholdOtsu(input_image, output_mask);
+        input_image.copyTo(output_image, output_mask);
+
+        imshow("input image", input_image);
+        imshow("output mask", output_mask);
+        imshow("output image", output_image);
+        output_image.setTo(0);
+        if (27 == waitKey(30))
+            return;
+    }
+}
+
+void canny(cv::Mat& img, cv::Mat& out) {
+    // 转换成灰度图像
+    if (img.channels()==3)
+        cv::cvtColor(img,out,CV_BGR2GRAY);
+    // 计算Canny边缘
+    cv::Canny(out,out,100,200);
+    // 反转图像
+    cv::threshold(out,out,128,255,cv::THRESH_BINARY_INV);
+}
+
+void testVideoCapture(){
+    const string filename = "C:\\Users\\xiet.5FUN\\Desktop\\cocosvideo.mp4";
+    const string net_stream = "rtsp://172.20.1.149:8554/184490";
+    VideoProcessor *videoProcessor;
+    videoProcessor->setInput(filename);
+    videoProcessor->displayInput("input");
+    videoProcessor->displayOutput("output");
+
+    int duration = 1000/videoProcessor->getFrameRate();
+    videoProcessor->setDelay(duration);
+    std::cout<< "frameRate" <<videoProcessor->getFrameRate() << endl;
+    std::cout<< "frameNumber" <<videoProcessor->getFrameNumber() << endl;
+    videoProcessor->setFrameProcessor(canny);
+    videoProcessor->run();
+
+
+    waitKey(0);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -1571,7 +1639,12 @@ int main(int argc, char *argv[])
 
     //Chapter:06
 //    testBlur(5);//低通、中通滤波
-    testSobel(1);
+//    testSobel(1);
+
+    //Chapter:11
+    testVideoCapture();
+
+//    ellipseSkinDetect();
 
     return 0;
 }
